@@ -4,7 +4,7 @@ Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -48,6 +48,20 @@ No, this plugin is designed to improve performance by removing unnecessary code 
 Yes, this plugin focuses on basic optimizations and should work alongside other optimization plugins.
 
 == Changelog ==
+
+= 1.0.3 - 2025-07-25 =
+* Fixed: Code standards compliance - string concatenation issues
+* Fixed: Variable alignment to follow WordPress coding standards
+* Fixed: Line ending characters from CRLF to LF for consistency
+* Fixed: PHPStan errors by updating function return types and class references
+* Changed: Moved main class to proper WordPress naming convention file structure
+* Added: Enhanced PHPStan configuration and development tools
+
+= 1.0.2 - 2025-07-16 =
+* Enhanced WordPress compatibility testing
+* Improved automated code quality checks
+* Added comprehensive CI/CD workflow
+* Updated documentation and security guidelines
 
 = 1.0.1 =
 * Fixed PHPStan compatibility issues with WP Store Locator functions

@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2025-07-25
+
+### Fixed
+- **Code Standards:**
+  - Fixed string concatenation issues by removing unnecessary concatenation operators
+  - Corrected variable alignment to follow WordPress coding standards
+  - Fixed line ending characters from CRLF to LF for consistency
+  - Resolved PHPStan errors by updating function return types and class references
+  - Added proper bootstrap configuration for PHPStan analysis
+
+### Changed
+- **File Structure:**
+  - Moved main class to `class-optimizations-ace-mc.php` following WordPress naming conventions
+  - Updated main plugin file to include class file properly
+  - Improved code organization and maintainability
+
+### Added
+- **Development Tools:**
+  - Added `.distignore` file for proper WordPress.org deployment
+  - Enhanced PHPStan configuration with proper bootstrap files
+  - Improved workflow compatibility testing
+
 ## [1.0.2] - 2025-07-16
 
 ### Fixed
