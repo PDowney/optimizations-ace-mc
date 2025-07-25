@@ -38,9 +38,7 @@ require_once OPTIMIZATIONS_ACE_MC_PLUGIN_DIR . 'class-optimizations-ace-mc.php';
  * @return Optimizations_Ace_Mc
  */
 function optimizations_ace_mc() {
-    // Get the instance without static access warning.
-    $class_name = 'Optimizations_Ace_Mc';
-    return call_user_func( array( $class_name, 'instance' ) );
+    return Optimizations_Ace_Mc::instance();
 }
 
 // Start the plugin.
