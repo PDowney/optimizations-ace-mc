@@ -5,6 +5,7 @@ parameters:
     level: 5
     paths:
         - optimizations-ace-mc.php
+        - class-optimizations-ace-mc.php
     
     bootstrapFiles:
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
