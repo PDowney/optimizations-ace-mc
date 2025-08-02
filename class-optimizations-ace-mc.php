@@ -73,11 +73,6 @@ class Optimizations_Ace_Mc {
      * Initialize WooCommerce-specific optimizations.
      */
     private function init_woocommerce_optimizations() {
-        // Only run if WooCommerce is active.
-        if ( ! $this->is_woocommerce_active() ) {
-            return;
-        }
-
         // Show empty categories in WooCommerce.
         add_filter( 'woocommerce_product_subcategories_hide_empty', '__return_false' );
 
@@ -96,11 +91,6 @@ class Optimizations_Ace_Mc {
      * Initialize WP Store Locator optimizations.
      */
     private function init_wpsl_optimizations() {
-        // Only run if WP Store Locator is active.
-        if ( ! $this->is_wpsl_active() ) {
-            return;
-        }
-
         // Show store categories in store locator.
         add_filter( 'wpsl_store_meta', array( $this, 'add_store_categories_to_meta' ), 10, 2 );
         add_filter( 'wpsl_info_window_template', array( $this, 'customize_info_window_template' ) );
@@ -124,24 +114,6 @@ class Optimizations_Ace_Mc {
     }
 
     /**
-     * Check if WooCommerce is active.
-     *
-     * @return bool
-     */
-    private function is_woocommerce_active() {
-        return class_exists( 'WooCommerce' );
-    }
-
-    /**
-     * Check if WP Store Locator is active.
-     *
-     * @return bool
-     */
-    private function is_wpsl_active() {
-        return class_exists( 'WPSL_Frontend' );
-    }
-
-    /**
      * Add order count column to users table.
      *
      * @param array $columns Existing columns.
@@ -162,11 +134,8 @@ class Optimizations_Ace_Mc {
      */
     public function display_user_order_count_column( $output, $column_name, $user_id ) {
         if ( 'user_order_count' === $column_name ) {
-            if ( function_exists( 'wc_get_customer_order_count' ) ) {
-                $order_count = wc_get_customer_order_count( absint( $user_id ) );
-                return esc_html( number_format_i18n( $order_count ) );
-            }
-            return '0';
+            $order_count = wc_get_customer_order_count( absint( $user_id ) );
+            return esc_html( number_format_i18n( $order_count ) );
         }
         return $output;
     }

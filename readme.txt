@@ -4,7 +4,7 @@ Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -48,6 +48,12 @@ No, this plugin is designed to improve performance by removing unnecessary code 
 Yes, this plugin focuses on basic optimizations and should work alongside other optimization plugins.
 
 == Changelog ==
+
+= 1.0.4 - 2025-08-02 =
+* Removed: All fallback methods and plugin availability checks for single-site deployment
+* Removed: WooCommerce and WP Store Locator activation checks since plugins are guaranteed to be active
+* Simplified: Direct function calls without existence validation for better performance
+* Optimized: Code structure for dedicated single-site environment
 
 = 1.0.3 - 2025-07-25 =
 * Fixed: Code standards compliance - string concatenation issues

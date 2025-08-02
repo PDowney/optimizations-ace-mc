@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2025-08-02
+
+### Removed
+- **Plugin Checks:**
+  - Removed WooCommerce activation check (`is_woocommerce_active()` method)
+  - Removed WP Store Locator activation check (`is_wpsl_active()` method)
+  - Removed `function_exists('wc_get_customer_order_count')` fallback check
+
+### Changed
+- **Performance:**
+  - Optimized for single-site deployment where WooCommerce and WP Store Locator are guaranteed to be active
+  - Simplified code structure by removing unnecessary plugin availability validations
+  - Direct function calls without existence checks for better performance
+
 ## [1.0.3] - 2025-07-25
 
 ### Fixed
