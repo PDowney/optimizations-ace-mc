@@ -38,21 +38,8 @@ class Optimizations_Ace_Mc {
      * Constructor.
      */
     public function __construct() {
-        add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
-
         // Initialize optimizations.
         $this->init_optimizations();
-    }
-
-    /**
-     * Load plugin textdomain.
-     */
-    public function load_textdomain() {
-        load_plugin_textdomain(
-            'optimizations-ace-mc',
-            false,
-            dirname( OPTIMIZATIONS_ACE_MC_PLUGIN_BASENAME ) . '/languages/'
-        );
     }
 
     /**
