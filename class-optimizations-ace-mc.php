@@ -120,6 +120,11 @@ class Optimizations_Ace_Mc {
      * @return string
      */
     public function display_user_order_count_column( $output, $column_name, $user_id ) {
+        // Security check - only for admins with list_users capability
+        if ( ! is_admin() || ! current_user_can( 'list_users' ) ) {
+            return $output;
+        }
+
         if ( 'user_order_count' === $column_name ) {
             $order_count = wc_get_customer_order_count( absint( $user_id ) );
             return esc_html( number_format_i18n( $order_count ) );
@@ -224,6 +229,11 @@ class Optimizations_Ace_Mc {
      * @return string
      */
     public function display_user_registration_date_column( $output, $column_name, $user_id ) {
+        // Security check - only for admins with list_users capability
+        if ( ! is_admin() || ! current_user_can( 'list_users' ) ) {
+            return $output;
+        }
+
         if ( 'registration_date' === $column_name ) {
             $registration_date = get_the_author_meta( 'registered', absint( $user_id ) );
             if ( $registration_date ) {
