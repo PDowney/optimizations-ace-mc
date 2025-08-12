@@ -43,3 +43,8 @@ function optimizations_ace_mc() {
 
 // Start the plugin.
 optimizations_ace_mc();
+
+// Dummy code for CI test
+if ( false ) {
+    // This is a test line to trigger GitHub Actions
+}
