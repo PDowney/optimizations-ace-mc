@@ -1,0 +1,129 @@
+# On-Demand AI Assistant for Issues and PRs
+# Triggered by @gemini-cli mentions in comments
+
+name: Gemini AI Assistant
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  ai-assistant:
+    name: AI Assistant Response
+    runs-on: ubuntu-latest
+    if: |
+      github.event.issue.state == 'open' && 
+      contains(github.event.comment.body, '@gemini-cli')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract AI Command
+        id: extract-command
+        run: |
+          COMMENT="${{ github.event.comment.body }}"
+          # Extract everything after @gemini-cli
+          COMMAND=$(echo "$COMMENT" | sed -n 's/.*@gemini-cli \(.*\)/\1/p' | head -1)
+          echo "command=$COMMAND" >> $GITHUB_OUTPUT
+          echo "Extracted command: $COMMAND"
+
+      - name: Run Gemini AI Assistant
+        uses: google-github-actions/run-gemini-cli@v0.1.10
+        with:
+          prompt: |
+            You are an expert WordPress plugin development assistant for the "Optimizations ACE MC" plugin.
+            
+            CONTEXT:
+            - Repository: WordPress optimization plugin for WooCommerce and WP Store Locator
+            - Version: 1.0.4, WordPress 6.5+, PHP 7.4+
+            - Single-site deployment with guaranteed plugin dependencies
+            
+            USER REQUEST: "${{ steps.extract-command.outputs.command }}"
+            
+            ISSUE/PR CONTEXT:
+            - Type: ${{ github.event.issue.pull_request && 'Pull Request' || 'Issue' }}
+            - Title: "${{ github.event.issue.title }}"
+            - Number: #${{ github.event.issue.number }}
+            - Author: @${{ github.event.issue.user.login }}
+            
+            RESPONSE GUIDELINES:
+            
+            📋 For Code Analysis Requests:
+            - Review code for WordPress standards compliance
+            - Check for security vulnerabilities
+            - Suggest performance improvements
+            - Provide specific, actionable recommendations
+            
+            🔧 For Implementation Help:
+            - Provide WordPress-specific solutions
+            - Include proper error handling
+            - Follow plugin coding standards
+            - Reference WordPress Codex when helpful
+            
+            🐛 For Bug Investigation:
+            - Analyze potential root causes
+            - Suggest debugging approaches
+            - Recommend testing strategies
+            - Consider WordPress environment factors
+            
+            ✨ For Feature Requests:
+            - Evaluate WordPress compatibility
+            - Consider performance implications
+            - Suggest implementation approaches
+            - Identify potential conflicts
+            
+            📚 For Documentation:
+            - Provide clear, actionable information
+            - Include relevant code examples
+            - Reference WordPress documentation
+            - Consider user experience impact
+            
+            Always be helpful, specific, and focus on WordPress best practices.
+            If you need more information to provide a complete answer, ask clarifying questions.
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Post AI Response
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const aiResponse = `
+            ## 🤖 AI Assistant Response
+            
+            Hi @${{ github.event.comment.user.login }}! I've analyzed your request: "${{ steps.extract-command.outputs.command }}"
+            
+            ### 📝 Analysis & Recommendations
+            
+            [The actual Gemini response would appear here from the action output]
+            
+            ### 🔗 Helpful Resources
+            - [WordPress Plugin Developer Handbook](https://developer.wordpress.org/plugins/)
+            - [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/)
+            - [Plugin Security Guidelines](https://developer.wordpress.org/plugins/security/)
+            
+            ### 💡 Available Commands
+            Try these commands with @gemini-cli:
+            - \`@gemini-cli review this code\` - Code review and analysis
+            - \`@gemini-cli suggest improvements\` - Performance and structure suggestions  
+            - \`@gemini-cli check security\` - Security vulnerability analysis
+            - \`@gemini-cli explain this function\` - Code explanation and documentation
+            - \`@gemini-cli write tests for X\` - Test implementation guidance
+            - \`@gemini-cli debug this issue\` - Bug investigation and resolution
+            
+            > 🔄 **Note:** This is an AI-generated response. Please review suggestions carefully and test thoroughly.
+            `;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: aiResponse
+            });

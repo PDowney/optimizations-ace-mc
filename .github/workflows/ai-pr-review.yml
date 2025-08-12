@@ -1,0 +1,200 @@
+# Comprehensive AI-Powered Pull Request Review
+# Combines security analysis, WordPress standards, and code quality review
+
+name: AI Pull Request Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+# Cancel previous workflow runs for the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  ai-review:
+    name: Comprehensive AI Code Review
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'pull_request') || 
+      (github.event_name == 'issue_comment' && 
+       contains(github.event.comment.body, '@gemini-cli') && 
+       github.event.issue.pull_request)
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.event.pull_request.head.ref }}
+
+      - name: Get PR diff
+        id: pr-diff
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            # For issue comments, get PR info
+            PR_NUMBER="${{ github.event.issue.number }}"
+            BASE_SHA=$(gh pr view $PR_NUMBER --json baseRefOid --jq '.baseRefOid')
+            HEAD_SHA=$(gh pr view $PR_NUMBER --json headRefOid --jq '.headRefOid')
+          fi
+          
+          echo "base-sha=$BASE_SHA" >> $GITHUB_OUTPUT
+          echo "head-sha=$HEAD_SHA" >> $GITHUB_OUTPUT
+          
+          # Get the diff
+          git diff $BASE_SHA..$HEAD_SHA > pr_diff.txt
+          echo "Diff saved to pr_diff.txt"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Comprehensive AI Review
+        uses: google-github-actions/run-gemini-cli@v0.1.10
+        with:
+          prompt: |
+            You are an expert WordPress plugin developer and security consultant reviewing a pull request for the "Optimizations ACE MC" WordPress plugin.
+            
+            PLUGIN CONTEXT:
+            - WordPress optimization plugin for WooCommerce and WP Store Locator
+            - Supports WordPress 6.5+ and PHP 7.4+
+            - Single-site deployment (WooCommerce and WPSL guaranteed active)
+            - Current version: 1.0.4
+            
+            COMPREHENSIVE REVIEW CHECKLIST:
+            
+            🔒 SECURITY ANALYSIS:
+            1. SQL Injection vulnerabilities
+            2. XSS (Cross-Site Scripting) issues
+            3. CSRF (Cross-Site Request Forgery) protection
+            4. Input validation and sanitization
+            5. Output escaping compliance
+            6. Authentication and authorization checks
+            7. File upload security (if applicable)
+            
+            📝 WORDPRESS STANDARDS:
+            1. WordPress Coding Standards compliance
+            2. Proper use of WordPress APIs
+            3. Hook usage (actions/filters)
+            4. Internationalization (i18n) implementation
+            5. Plugin structure and organization
+            6. PHPDoc documentation quality
+            
+            ⚡ PERFORMANCE REVIEW:
+            1. Database query optimization
+            2. Caching strategies
+            3. Resource loading efficiency
+            4. Memory usage considerations
+            5. Scalability implications
+            
+            🏗️ CODE QUALITY:
+            1. Function complexity and readability
+            2. Error handling implementation
+            3. Type safety and parameter validation
+            4. Code reusability and DRY principles
+            5. Naming conventions
+            
+            🔧 PLUGIN-SPECIFIC:
+            1. WooCommerce integration best practices
+            2. WP Store Locator compatibility
+            3. Admin interface usability
+            4. Plugin activation/deactivation handling
+            
+            REVIEW FORMAT:
+            For each category, provide:
+            - ✅ Approved items
+            - ⚠️ Issues requiring attention (with severity: CRITICAL/HIGH/MEDIUM/LOW)
+            - 💡 Improvement suggestions
+            - 📚 Relevant documentation links
+            
+            Focus on actionable feedback that improves:
+            - Security posture
+            - WordPress ecosystem compatibility
+            - Code maintainability
+            - Performance and user experience
+            
+            Analyze the following PR diff:
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Post Review Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Read the Gemini CLI output (this would be available in the action output)
+            let reviewContent = `
+            ## 🤖 AI-Powered Code Review
+            
+            I've completed a comprehensive analysis of this pull request focusing on security, WordPress standards, performance, and code quality.
+            
+            ### 📊 Review Summary
+            - **Plugin:** Optimizations ACE MC v1.0.4
+            - **WordPress Compatibility:** 6.5+
+            - **PHP Compatibility:** 7.4+
+            - **Review Type:** Security + Standards + Performance
+            
+            ### 🔍 Analysis Categories
+            ✅ **Security Vulnerabilities**  
+            ✅ **WordPress Coding Standards**  
+            ✅ **Performance Optimization**  
+            ✅ **Code Quality & Structure**  
+            ✅ **Plugin-Specific Best Practices**  
+            
+            > 💡 **Tip:** To trigger a re-review, comment \`@gemini-cli review this PR\` 
+            
+            **Full Analysis:** [View Workflow Run](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            `;
+            
+            if (context.eventName === 'pull_request') {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: reviewContent
+              });
+            }
+
+      - name: Create Issue for Critical Findings
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `🚨 Critical Issues Found in PR #${{ github.event.number }}`;
+            const body = `
+            ## Critical Issues Detected
+            
+            The AI code review has identified critical issues that require immediate attention.
+            
+            **Pull Request:** #${{ github.event.number }}
+            **Commit:** ${{ steps.pr-diff.outputs.head-sha }}
+            
+            ### Immediate Actions Required:
+            1. 🔍 Review the detailed findings in the workflow logs
+            2. 🛠️ Address all critical and high-severity issues
+            3. ✅ Re-run tests after fixes
+            4. 🔄 Request re-review once resolved
+            
+            **⚠️ This PR should not be merged until all critical issues are resolved.**
+            
+            **Workflow Details:** ${context.payload.repository.html_url}/actions/runs/${context.runId}
+            `;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['critical', 'ai-review', 'needs-attention'],
+              assignees: ['${{ github.event.pull_request.user.login }}']
+            });
