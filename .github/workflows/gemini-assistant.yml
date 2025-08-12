@@ -154,6 +154,7 @@ jobs:
           USER_COMMAND: ${{ steps.extract-command.outputs.command }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
             const commentUser = process.env.COMMENT_USER;
@@ -208,6 +209,10 @@ jobs:
             
             await github.rest.issues.createComment({
               issue_number: issueNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: aiResponse
+            });
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: aiResponse

@@ -17,7 +17,9 @@ concurrency:
 
 permissions:
   contents: read
+  issues: write
   pull-requests: write
+  actions: read
 
 jobs:
   wordpress-standards-check:
@@ -119,6 +121,7 @@ jobs:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           FILES_COUNT: ${{ steps.changed-files.outputs.all_changed_files_count }}
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
             const changedFiles = process.env.CHANGED_FILES;
@@ -168,13 +171,22 @@ jobs:
             `;
             
             // Create issue for standards review
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: title,
-              body: body,
-              labels: ['code-standards', 'wordpress', 'ai-generated', 'needs-review']
-            });
+            try {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['code-standards', 'wordpress', 'ai-generated', 'needs-review']
+              });
+              console.log('✅ Standards analysis issue created successfully');
+            } catch (error) {
+              console.log('⚠️ Could not create issue, writing to workflow summary instead');
+              await core.summary
+                .addHeading('📋 WordPress Standards Review')
+                .addRaw(body)
+                .write();
+            }
 
       - name: Comment on PR with Findings
         if: github.event_name == 'pull_request'

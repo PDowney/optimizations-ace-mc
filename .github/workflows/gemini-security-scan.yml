@@ -20,6 +20,7 @@ permissions:
   contents: read
   issues: write
   pull-requests: write
+  actions: read
 
 jobs:
   security-scan:
@@ -95,6 +96,7 @@ jobs:
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
             const changedFiles = process.env.CHANGED_FILES;
@@ -136,13 +138,23 @@ jobs:
             **Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}
             `;
             
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: title,
-              body: body,
-              labels: ['security-analysis', 'ai-generated', 'needs-review']
-            });
+            // Create issue for security analysis
+            try {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['security-analysis', 'ai-generated', 'needs-review']
+              });
+              console.log('✅ Security analysis issue created successfully');
+            } catch (error) {
+              console.log('⚠️ Could not create issue, writing to workflow summary instead');
+              await core.summary
+                .addHeading('🔒 Security Analysis Report')
+                .addRaw(body)
+                .write();
+            }
 
       - name: Create Security Issue on Critical Findings
         if: failure()
