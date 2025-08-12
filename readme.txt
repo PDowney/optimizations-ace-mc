@@ -4,7 +4,7 @@ Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -48,6 +48,14 @@ No, this plugin is designed to improve performance by removing unnecessary code 
 Yes, this plugin focuses on basic optimizations and should work alongside other optimization plugins.
 
 == Changelog ==
+
+= 1.0.5 - 2025-08-11 =
+* Security: Fixed critical code injection vulnerabilities in GitHub Actions workflows
+* Security: Implemented secure environment variable usage pattern for AI workflows
+* Added: Comprehensive AI-powered workflow suite with Gemini integration
+* Added: Automated code review and security scanning with AI assistance
+* Added: Interactive Gemini assistant for code help and issue management
+* Fixed: YAML corruption issues and duplicate environment variable definitions
 
 = 1.0.4 - 2025-08-02 =
 * Removed: All fallback methods and plugin availability checks for single-site deployment

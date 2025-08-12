@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2025-08-11
+
+### Security
+- **GitHub Actions Security:**
+  - Fixed critical code injection vulnerabilities in all AI-powered workflows
+  - Implemented secure environment variable usage pattern to prevent script injection attacks
+  - Applied two-stage security pattern for handling untrusted step outputs
+  - Secured workflows: ai-pr-comment.yml, gemini-security-scan.yml, wordpress-standards-check.yml
+
+### Added
+- **AI-Powered Workflows:**
+  - Comprehensive GitHub Actions workflow suite with Gemini AI integration
+  - Automated code review and security scanning with AI assistance
+  - Pull request analysis and automated commenting system
+  - WordPress coding standards validation with AI recommendations
+  - Gemini assistant for interactive code help and issue management
+
+### Fixed
+- **Workflow Integrity:**
+  - Resolved YAML corruption issues in GitHub Actions workflows
+  - Fixed duplicate environment variable definitions
+  - Corrected workflow syntax and structure for proper execution
+
 ## [1.0.4] - 2025-08-02
 
 ### Removed

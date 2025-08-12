@@ -9,7 +9,7 @@ This is a lightweight WordPress optimization plugin designed specifically for a 
 
 ## Plugin Details
 - **Name:** Optimizations ACE MC
-- **Version:** 1.0.4
+- **Version:** 1.0.5
 - **WordPress Compatibility:** 6.5+
 - **PHP Compatibility:** 7.4+
 - **License:** GPL-3.0-or-later

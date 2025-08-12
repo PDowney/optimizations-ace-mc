@@ -99,7 +99,7 @@ jobs:
             
             CONTEXT:
             - Repository: WordPress optimization plugin for WooCommerce and WP Store Locator
-            - Version: 1.0.4, WordPress 6.5+, PHP 7.4+
+            - Version: 1.0.5, WordPress 6.5+, PHP 7.4+
             - Single-site deployment with guaranteed plugin dependencies
             
             USER REQUEST: "${USER_COMMAND}"

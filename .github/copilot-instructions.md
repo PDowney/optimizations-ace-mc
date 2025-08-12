@@ -70,6 +70,7 @@ You must read files completely and thoroughly, with a minimum of 1500 lines per 
   - README.md
   - readme.txt (for WordPress.org)
   - CHANGELOG.md
+  - GEMINI.md
   - plugin header (in the main plugin file)
   - plugin section: "// Define plugin constants"
   - plugin *.pot files (e.g., languages/plugin-name.pot)
