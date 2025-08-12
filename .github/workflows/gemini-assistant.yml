@@ -83,7 +83,7 @@ jobs:
                
           echo "pr-available=true" >> $GITHUB_OUTPUT
 
-      - name: Install and Run Gemini AI Assistant
+      - name: Run Gemini AI Assistant
         env:
           # SECURITY: Use environment variables for safe handling
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -93,9 +93,7 @@ jobs:
           ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
           IS_PR: ${{ github.event.issue.pull_request && 'Pull Request' || 'Issue' }}
         run: |
-          npm install -g @google/gemini-cli@latest
-          export PATH="$PATH:$(npm bin -g)"
-          gemini-cli chat --prompt "
+          npx @google/gemini-cli@latest chat --prompt "
           You are an expert WordPress plugin development assistant for the \"Optimizations ACE MC\" plugin.
           
           CONTEXT:
