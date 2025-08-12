@@ -23,7 +23,7 @@ jobs:
     
     steps:
       - name: Checkout code (Safe - uses default branch)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           # SECURITY: Do NOT checkout PR head - use base branch only
