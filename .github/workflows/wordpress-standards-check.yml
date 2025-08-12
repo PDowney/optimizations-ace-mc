@@ -38,16 +38,14 @@ jobs:
             **/*.php
           separator: "\n"
 
-      - name: Install Gemini CLI
-        if: steps.changed-files.outputs.any_changed == 'true'
-        run: npm install -g @google/gemini-cli@latest
-
-      - name: Run WordPress Best Practices Analysis
+      - name: Install and Run WordPress Best Practices Analysis
         if: steps.changed-files.outputs.any_changed == 'true'
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
+          npm install -g @google/gemini-cli@latest
+          export PATH="$PATH:$(npm bin -g)"
           gemini-cli chat --prompt "
           You are a WordPress development expert and WordPress.org plugin reviewer.
           
