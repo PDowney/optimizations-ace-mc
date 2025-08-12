@@ -45,47 +45,8 @@ jobs:
       - name: Run Gemini Security Analysis
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: google-github-actions/run-gemini-cli@v0.1.10
-        with:
-          prompt: |
-            You are a WordPress security expert with deep knowledge of plugin vulnerabilities.
-            
-            SECURITY SCAN INSTRUCTIONS:
-            Analyze the following code changes for security vulnerabilities. Focus on:
-            
-            🔴 CRITICAL SECURITY ISSUES:
-            - SQL Injection: Check for unsanitized database queries, missing prepared statements
-            - Cross-Site Scripting (XSS): Look for unescaped output, missing esc_html/esc_attr
-            - Cross-Site Request Forgery (CSRF): Verify nonce usage in forms and AJAX
-            - Authentication Bypass: Check user capability validation
-            - File Upload Vulnerabilities: Verify file type and size validation
-            - Directory Traversal: Look for path manipulation vulnerabilities
-            - Code Injection: Check for eval(), exec(), system() usage
-            
-            🟡 WORDPRESS-SPECIFIC SECURITY:
-            - Proper use of WordPress sanitization functions
-            - Correct capability checks (current_user_can)
-            - WordPress nonce verification
-            - Proper use of wpdb prepared statements
-            - Validation of user input and file uploads
-            - Secure handling of options and meta data
-            
-            🟢 BEST PRACTICES:
-            - Input validation and sanitization
-            - Output escaping and encoding
-            - Secure API endpoint implementation
-            - Proper error handling without information disclosure
-            
-            For each issue found:
-            1. Specify the exact file and line number
-            2. Explain the vulnerability type and risk level
-            3. Provide secure code recommendations
-            4. Reference WordPress Codex security guidelines
-            
-            If no vulnerabilities are found, confirm the code follows WordPress security standards.
-            
-            FILES TO ANALYZE:
-            ${{ steps.changed-files.outputs.all_changed_files }}
         env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Create Security Issue on Critical Findings

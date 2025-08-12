@@ -25,12 +25,15 @@ jobs:
     steps:
       - name: Download analysis artifacts
         uses: actions/github-script@v7
+        env:
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
         with:
           script: |
+            const runId = process.env.WORKFLOW_RUN_ID;
             const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              run_id: ${{ github.event.workflow_run.id }},
+              run_id: runId,
             });
             
             const matchArtifact = artifacts.data.artifacts.find((artifact) => {
@@ -50,7 +53,7 @@ jobs:
             });
             
             const fs = require('fs');
-            fs.writeFileSync('${{ github.workspace }}/pr-analysis.zip', Buffer.from(download.data));
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/pr-analysis.zip`, Buffer.from(download.data));
 
       - name: Extract and validate artifacts
         id: extract-data
@@ -80,11 +83,17 @@ jobs:
 
       - name: Post AI review comment
         uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ steps.extract-data.outputs.pr-number }}
+          HEAD_SHA: ${{ steps.extract-data.outputs.head-sha }}
+          AUTHOR: ${{ steps.extract-data.outputs.author }}
+          WORKFLOW_URL: ${{ github.event.workflow_run.html_url }}
         with:
           script: |
-            const prNumber = ${{ steps.extract-data.outputs.pr-number }};
-            const headSha = "${{ steps.extract-data.outputs.head-sha }}";
-            const author = "${{ steps.extract-data.outputs.author }}";
+            const prNumber = process.env.PR_NUMBER;
+            const headSha = process.env.HEAD_SHA;
+            const author = process.env.AUTHOR;
+            const workflowUrl = process.env.WORKFLOW_URL;
             
             // Validate inputs
             if (!prNumber || !headSha) {
@@ -132,7 +141,7 @@ jobs:
             
             > 🔄 **Note:** This analysis was performed securely without executing untrusted code
             
-            **Analysis Workflow:** [View Details](${{ github.event.workflow_run.html_url }})
+            **Analysis Workflow:** [View Details](${workflowUrl})
             `;
             
             await github.rest.issues.createComment({
@@ -153,13 +162,16 @@ jobs:
       - name: Download failure artifacts (if any)
         uses: actions/github-script@v7
         continue-on-error: true
+        env:
+          WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
         with:
           script: |
             try {
+              const runId = process.env.WORKFLOW_RUN_ID;
               const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                run_id: ${{ github.event.workflow_run.id }},
+                run_id: runId,
               });
               
               const matchArtifact = artifacts.data.artifacts.find((artifact) => {
@@ -196,9 +208,13 @@ jobs:
 
       - name: Create failure issue
         uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ steps.extract-pr.outputs.pr-number }}
+          WORKFLOW_HTML_URL: ${{ github.event.workflow_run.html_url }}
         with:
           script: |
-            const prNumber = "${{ steps.extract-pr.outputs.pr-number }}";
+            const prNumber = process.env.PR_NUMBER;
+            const workflowUrl = process.env.WORKFLOW_HTML_URL;
             
             const title = `🚨 AI Analysis Failed${prNumber ? ` for PR #${prNumber}` : ''}`;
             const body = `
@@ -207,7 +223,7 @@ jobs:
             The automated AI code analysis workflow has failed and requires attention.
             
             ${prNumber ? `**Pull Request:** #${prNumber}` : '**Pull Request:** Unable to determine'}
-            **Workflow Run:** ${{ github.event.workflow_run.html_url }}
+            **Workflow Run:** ${workflowUrl}
             **Failure Time:** ${new Date().toISOString()}
             
             ### Possible Causes
