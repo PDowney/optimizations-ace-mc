@@ -93,7 +93,7 @@ jobs:
           ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
           IS_PR: ${{ github.event.issue.pull_request && 'Pull Request' || 'Issue' }}
         run: |
-          npx @google/gemini-cli@latest chat --prompt "
+          npx @google/gemini-cli@latest --prompt "
           You are an expert WordPress plugin development assistant for the \"Optimizations ACE MC\" plugin.
           
           CONTEXT:
@@ -209,10 +209,6 @@ jobs:
             
             await github.rest.issues.createComment({
               issue_number: issueNumber,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: aiResponse
-            });
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: aiResponse

@@ -46,7 +46,7 @@ jobs:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          npx @google/gemini-cli@latest chat --prompt "
+          npx @google/gemini-cli@latest --prompt "
           You are a WordPress development expert and WordPress.org plugin reviewer.
           
           WORDPRESS BEST PRACTICES ANALYSIS:
