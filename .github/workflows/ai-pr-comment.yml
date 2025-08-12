@@ -107,7 +107,7 @@ jobs:
             Hi @${author}! I've completed a comprehensive analysis of this pull request.
             
             ### 📊 Review Summary
-            - **Plugin:** Optimizations ACE MC v1.0.5
+            - **Plugin:** Optimizations ACE MC
             - **Commit:** \`${headSha.substring(0, 7)}\`
             - **WordPress Compatibility:** 6.5+
             - **PHP Compatibility:** 7.4+

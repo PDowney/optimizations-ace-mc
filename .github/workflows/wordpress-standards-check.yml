@@ -38,31 +38,37 @@ jobs:
             **/*.php
           separator: "\n"
 
+      - name: Install Gemini CLI
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: npm install -g @google/gemini-cli@latest
+
       - name: Run WordPress Best Practices Analysis
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: google-github-actions/run-gemini-cli@v0.1.10
-        with:
-          prompt: |
-            You are a WordPress development expert and WordPress.org plugin reviewer.
-            
-            WORDPRESS BEST PRACTICES ANALYSIS:
-            Review the following code changes for WordPress coding standards and best practices:
-            
-            📋 CODING STANDARDS (WordPress Coding Standards):
-            - PSR-4 autoloading compliance
-            - Proper function and variable naming (snake_case)
-            - Class naming conventions (PascalCase with underscores)
-            - File naming conventions (lowercase with hyphens)
-            - Proper indentation (tabs vs spaces - WordPress uses tabs)
-            - Line length limits (150 characters max)
-            - Proper commenting and PHPDoc blocks
-            
-            🏗️ ARCHITECTURE & STRUCTURE:
-            - Single responsibility principle
-            - Proper use of WordPress hooks (actions/filters)
-            - Singleton pattern implementation
-            - Plugin structure and organization
-            - Proper use of WordPress APIs
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          gemini-cli chat --prompt "
+          You are a WordPress development expert and WordPress.org plugin reviewer.
+          
+          WORDPRESS BEST PRACTICES ANALYSIS:
+          Review the following code changes for WordPress coding standards and best practices:
+          
+          📋 CODING STANDARDS (WordPress Coding Standards):
+          - PSR-4 autoloading compliance
+          - Proper function and variable naming (snake_case)
+          - Class naming conventions (PascalCase with underscores)
+          - File naming conventions (lowercase with hyphens)
+          - Proper indentation (tabs vs spaces - WordPress uses tabs)
+          - Line length limits (150 characters max)
+          - Proper commenting and PHPDoc blocks
+          
+          🏗️ ARCHITECTURE & STRUCTURE:
+          - Single responsibility principle
+          - Proper use of WordPress hooks (actions/filters)
+          - Singleton pattern implementation
+          - Plugin structure and organization
+          - Proper use of WordPress APIs
             
             🔧 WORDPRESS-SPECIFIC BEST PRACTICES:
             - Proper plugin header format
@@ -108,9 +114,7 @@ jobs:
             
             FILES TO ANALYZE:
             $CHANGED_FILES
-        env:
-          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+            "
 
       - name: Comment on PR with Findings
         if: github.event_name == 'pull_request'
