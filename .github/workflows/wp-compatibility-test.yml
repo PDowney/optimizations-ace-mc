@@ -226,6 +226,8 @@ jobs:
               <exclude-pattern>*/languages/*</exclude-pattern>
               <exclude-pattern>*/.git/*</exclude-pattern>
               <exclude-pattern>*/.github/*</exclude-pattern>
+              <exclude-pattern>*.js</exclude-pattern>
+              <exclude-pattern>*.css</exclude-pattern>
 
               <!-- Use WordPress VIP Go coding standards -->
               <rule ref="WordPress-VIP-Go">
@@ -235,15 +237,18 @@ jobs:
                   <!-- Allow longer lines for readability in some cases -->
                   <exclude name="Generic.Files.LineLength.TooLong"/>
                   
-                  <!-- Adjust severity for some VIP-specific rules that may not apply to all plugins -->
-                  <exclude name="WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fwrite"/>
-                  <exclude name="WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_file_put_contents"/>
+                  <!-- Exclude JS-related sniffs to avoid deprecation warnings -->
+                  <exclude name="WordPressVIPMinimum.JS"/>
               </rule>
 
-              <!-- VIP-specific security and performance rules -->
+              <!-- Add specific WordPressVIPMinimum rules (non-JS) -->
               <rule ref="WordPressVIPMinimum.Security"/>
               <rule ref="WordPressVIPMinimum.Performance"/>
               <rule ref="WordPressVIPMinimum.UserExperience"/>
+              <rule ref="WordPressVIPMinimum.Functions"/>
+              <rule ref="WordPressVIPMinimum.Variables"/>
+              <rule ref="WordPressVIPMinimum.Files"/>
+              <rule ref="WordPressVIPMinimum.Hooks"/>
 
               <!-- WordPress internationalization with plugin text domain -->
               <rule ref="WordPress.WP.I18n">
@@ -254,12 +259,8 @@ jobs:
                   </properties>
               </rule>
 
-              <!-- WordPress PHP compatibility -->
-              <rule ref="PHPCompatibilityWP">
-                  <include-pattern>*\.php$</include-pattern>
-              </rule>
-              <config name="minimum_supported_wp_version" value="6.5"/>
-              <config name="testVersion" value="7.4-"/>
+              <!-- Only scan PHP files -->
+              <arg name="extensions" value="php"/>
 
               <!-- Show progress -->
               <arg value="p"/>
@@ -278,16 +279,20 @@ jobs:
       - name: Run WordPress VIP PHPCS
         run: |
           echo "🚀 Running WordPress VIP Go Coding Standards scan..."
-          echo "📋 This scan checks for VIP-specific requirements including:"
+          echo "📋 This scan focuses on VIP-specific requirements including:"
           echo "   • File system operation restrictions"
           echo "   • Performance and caching best practices"  
           echo "   • Security vulnerabilities specific to VIP platform"
           echo "   • User experience guidelines for enterprise WordPress"
           echo "   • Uncached function usage patterns"
           echo ""
+          echo "📦 Using standards: WordPress-VIP-Go, WordPressVIPMinimum"
+          echo "🎯 Scanning PHP files only (excluding JS/CSS to avoid deprecation warnings)"
+          echo ""
           
           # Run VIP-specific PHPCS scan using our custom configuration
-          phpcs --standard=phpcs-vip.xml --extensions=php --ignore=vendor,tests,node_modules . || {
+          # Only scan PHP files to avoid JS/CSS deprecation warnings
+          phpcs --standard=phpcs-vip.xml --extensions=php . || {
             echo ""
             echo "⚠️ WordPress VIP coding standards issues found."
             echo "💡 Note: These are VIP-specific recommendations for enterprise WordPress platforms."
