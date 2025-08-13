@@ -6,7 +6,7 @@
  * Version: 1.0.5
  * Author: PDowney
  * Author URI: https://github.com/PDowney
- * License: GPL v3 or later
+ * License: GPL-3.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: optimizations-ace-mc
  * Domain Path: /languages
@@ -41,8 +41,8 @@ function optimizations_ace_mc() {
     return Optimizations_Ace_Mc::instance();
 }
 
-// Start the plugin.
-optimizations_ace_mc();
+// Start the plugin once all other plugins are loaded.
+add_action( 'plugins_loaded', 'optimizations_ace_mc' );
 
 // Dummy code for CI test
 if ( false ) {
