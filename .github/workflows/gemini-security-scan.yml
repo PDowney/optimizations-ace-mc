@@ -18,8 +18,6 @@ concurrency:
 
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
   actions: read
 
 jobs:
@@ -90,13 +88,42 @@ jobs:
           $CHANGED_FILES
           " > security-analysis.txt
 
-      - name: Post Security Analysis Summary
+      - name: Display Security Analysis Summary
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "=================================="
+          echo "🔒 SECURITY ANALYSIS REPORT"
+          echo "=================================="
+          echo "Repository: ${{ github.repository }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Files Analyzed: ${{ steps.changed-files.outputs.all_changed_files }}"
+          echo "Analysis Date: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          echo ""
+          echo "🤖 AI Security Expert Findings:"
+          echo "=================================="
+          
+          if [ -f "security-analysis.txt" ]; then
+            cat security-analysis.txt
+          else
+            echo "⚠️ No analysis output found."
+          fi
+          
+          echo ""
+          echo "=================================="
+          echo "📋 Next Steps:"
+          echo "- Review any security issues identified above"
+          echo "- Address critical and high-severity findings immediately"
+          echo "- Test all security-related changes thoroughly"
+          echo "- Consider implementing additional security measures if recommended"
+          echo "=================================="
+
+      - name: Create Workflow Summary
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/github-script@v7
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
             const changedFiles = process.env.CHANGED_FILES;
@@ -111,8 +138,7 @@ jobs:
               analysisContent = 'Error reading security analysis results.';
             }
             
-            const title = `🔒 Security Analysis Report - ${context.sha.substring(0, 7)}`;
-            const body = `
+            const summaryContent = `
             ## 🛡️ WordPress Security Analysis Results
             
             **Repository:** ${context.repo.owner}/${context.repo.repo}
@@ -138,56 +164,11 @@ jobs:
             **Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}
             `;
             
-            // Create issue for security analysis
-            try {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: title,
-                body: body,
-                labels: ['security-analysis', 'ai-generated', 'needs-review']
-              });
-              console.log('✅ Security analysis issue created successfully');
-            } catch (error) {
-              console.log('⚠️ Could not create issue, writing to workflow summary instead');
-              await core.summary
-                .addHeading('🔒 Security Analysis Report')
-                .addRaw(body)
-                .write();
-            }
+            await core.summary
+              .addHeading('🔒 Security Analysis Report')
+              .addRaw(summaryContent)
+              .write();
+            
+            console.log('✅ Security analysis summary created in workflow logs');
 
-      - name: Create Security Issue on Critical Findings
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const title = `🚨 Critical Security Vulnerabilities Detected - ${context.sha.substring(0, 7)}`;
-            const body = `
-            ## Security Scan Results
-            
-            Critical security vulnerabilities have been detected in recent changes.
-            
-            **Commit:** ${context.sha}
-            **Branch:** ${context.ref}
-            **Triggered by:** ${context.eventName}
-            
-            Please review the workflow logs for detailed findings and remediation steps.
-            
-            **Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}
-            
-            ## Immediate Actions Required:
-            1. Review the security findings in the workflow logs
-            2. Fix all critical and high-severity issues
-            3. Test fixes thoroughly
-            4. Re-run security scan to verify fixes
-            
-            **⚠️ Do not merge this PR until all security issues are resolved.**
-            `;
-            
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: title,
-              body: body,
-              labels: ['security', 'bug', 'critical']
-            });
+

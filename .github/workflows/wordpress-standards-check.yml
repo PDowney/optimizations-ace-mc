@@ -17,8 +17,6 @@ concurrency:
 
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
   actions: read
 
 jobs:
@@ -114,14 +112,47 @@ jobs:
             $CHANGED_FILES
             " > standards-analysis.txt
 
-      - name: Post Standards Analysis Summary
+      - name: Display Standards Analysis Summary
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "=================================="
+          echo "📋 WORDPRESS STANDARDS REVIEW"
+          echo "=================================="
+          echo "Repository: ${{ github.repository }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Files Analyzed: ${{ steps.changed-files.outputs.all_changed_files_count }}"
+          echo "Analysis Date: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          echo ""
+          echo "📁 Files Reviewed:"
+          echo "${{ steps.changed-files.outputs.all_changed_files }}"
+          echo ""
+          echo "🤖 WordPress Expert Findings:"
+          echo "=================================="
+          
+          if [ -f "standards-analysis.txt" ]; then
+            cat standards-analysis.txt
+          else
+            echo "⚠️ No analysis output found."
+          fi
+          
+          echo ""
+          echo "=================================="
+          echo "📋 Recommended Actions:"
+          echo "- Review all findings marked as CRITICAL or HIGH priority"
+          echo "- Implement suggested WordPress coding standards improvements"
+          echo "- Test changes to ensure compatibility with WordPress 6.5+ and PHP 7.4+"
+          echo "- Consider performance optimizations where recommended"
+          echo "- Update documentation if architectural changes are suggested"
+          echo "=================================="
+
+      - name: Create Workflow Summary
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/github-script@v7
         env:
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           FILES_COUNT: ${{ steps.changed-files.outputs.all_changed_files_count }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
             const changedFiles = process.env.CHANGED_FILES;
@@ -137,8 +168,7 @@ jobs:
               analysisContent = 'Error reading standards analysis results.';
             }
             
-            const title = `📋 WordPress Standards Review - ${context.sha.substring(0, 7)}`;
-            const body = `
+            const summaryContent = `
             ## 🎯 WordPress Best Practices Analysis Results
             
             **Repository:** ${context.repo.owner}/${context.repo.repo}
@@ -170,60 +200,11 @@ jobs:
             **Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}
             `;
             
-            // Create issue for standards review
-            try {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: title,
-                body: body,
-                labels: ['code-standards', 'wordpress', 'ai-generated', 'needs-review']
-              });
-              console.log('✅ Standards analysis issue created successfully');
-            } catch (error) {
-              console.log('⚠️ Could not create issue, writing to workflow summary instead');
-              await core.summary
-                .addHeading('📋 WordPress Standards Review')
-                .addRaw(body)
-                .write();
-            }
+            await core.summary
+              .addHeading('📋 WordPress Standards Review')
+              .addRaw(summaryContent)
+              .write();
+            
+            console.log('✅ Standards analysis summary created in workflow logs');
 
-      - name: Comment on PR with Findings
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        env:
-          FILES_COUNT: ${{ steps.changed-files.outputs.all_changed_files_count }}
-        with:
-          script: |
-            const fs = require('fs');
-            const filesCount = process.env.FILES_COUNT;
-            
-            // This would be the output from Gemini CLI
-            const comment = `
-            ## 🎯 WordPress Best Practices Review
-            
-            Thank you for your contribution! I've analyzed your code changes for WordPress best practices and coding standards.
-            
-            ### 📊 Analysis Summary
-            - **Files Analyzed:** ${filesCount}
-            - **WordPress Version:** 6.5+ compatible
-            - **PHP Version:** 7.4+ compatible
-            
-            ### 🔍 Key Areas Reviewed
-            ✅ WordPress Coding Standards  
-            ✅ Plugin Architecture  
-            ✅ Security Best Practices  
-            ✅ Performance Considerations  
-            ✅ Internationalization  
-            
-            > **Note:** This is an AI-powered analysis. Please review suggestions carefully and validate against the [WordPress Plugin Developer Handbook](https://developer.wordpress.org/plugins/).
-            
-            **Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}
-            `;
-            
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+
