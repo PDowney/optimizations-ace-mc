@@ -48,6 +48,8 @@ jobs:
 
       - name: Run AI Analysis (No secrets exposed)
         uses: google-github-actions/run-gemini-cli@v0.1.11
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         with:
           prompt: |
             You are an expert WordPress plugin developer and security consultant reviewing a pull request for the "Optimizations ACE MC" WordPress plugin.
