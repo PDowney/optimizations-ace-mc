@@ -43,18 +43,3 @@ function optimizations_ace_mc() {
 
 // Start the plugin once all other plugins are loaded.
 add_action( 'plugins_loaded', 'optimizations_ace_mc' );
-
-// Dummy code for CI test
-if ( false ) {
-    // This is a test line to trigger GitHub Actions
-    // test 2
-    // test 3
-    // test 4
-    // test 5
-    // test 6
-    // test 7
-    // test 8
-    // test 9
-    // test 10
-    
-}
