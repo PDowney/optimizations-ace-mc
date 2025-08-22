@@ -77,6 +77,9 @@ Yes, this plugin focuses on specific admin and functionality enhancements rather
 * Security: Enhanced CSRF protection using proper WordPress Settings API handling
 * Changed: All optimization features are now optional and user-configurable
 * Changed: Features load conditionally based on user settings
+* Fixed: Array alignment issues to meet WordPress coding standards
+* Fixed: Removed unused variables and refactored long methods for better code quality
+* Fixed: Updated PHPCS configuration to properly allow tabs for indentation per WordPress standards
 
 = 1.0.5 - 2025-08-11 =
 * Security: Fixed critical code injection vulnerabilities in GitHub Actions workflows

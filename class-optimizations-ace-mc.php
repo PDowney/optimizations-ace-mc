@@ -7,7 +7,7 @@
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
-    die;
+	die;
 }
 
 /**
@@ -15,130 +15,130 @@ if ( ! defined( 'WPINC' ) ) {
  */
 class Optimizations_Ace_Mc {
 
-    /**
-     * The single instance of the class.
-     *
-     * @var Optimizations_Ace_Mc|null
-     */
-    protected static $instance = null;
+	/**
+	 * The single instance of the class.
+	 *
+	 * @var Optimizations_Ace_Mc|null
+	 */
+	protected static $instance = null;
 
-    /**
-     * Plugin settings.
-     *
-     * @var array
-     */
-    private $settings = array();
+	/**
+	 * Plugin settings.
+	 *
+	 * @var array
+	 */
+	private $settings = array();
 
-    /**
-     * Default settings.
-     *
-     * @var array
-     */
-    private $default_settings = array(
-        'woocommerce_show_empty_categories'   => true,
-        'woocommerce_hide_category_count'     => true,
-        'woocommerce_user_order_count_column' => true,
-        'wpsl_show_store_categories'          => true,
-        'wpsl_disable_rest_api'               => true,
-        'admin_user_registration_date_column' => true,
-    );
+	/**
+	 * Default settings.
+	 *
+	 * @var array
+	 */
+	private $default_settings = array(
+		'woocommerce_show_empty_categories'   => true,
+		'woocommerce_hide_category_count'     => true,
+		'woocommerce_user_order_count_column' => true,
+		'wpsl_show_store_categories'          => true,
+		'wpsl_disable_rest_api'               => true,
+		'admin_user_registration_date_column' => true,
+	);
 
-    /**
-     * Main instance.
-     *
-     * @return Optimizations_Ace_Mc
-     */
-    public static function instance() {
-        if ( null === self::$instance ) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
+	/**
+	 * Main instance.
+	 *
+	 * @return Optimizations_Ace_Mc
+	 */
+	public static function instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
 
-    /**
-     * Constructor.
-     */
-    public function __construct() {
-        // Load settings.
-        $this->load_settings();
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		// Load settings.
+		$this->load_settings();
 
-        // Initialize admin interface.
-        add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
-        add_action( 'admin_init', array( $this, 'init_settings' ) );
+		// Initialize admin interface.
+		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+		add_action( 'admin_init', array( $this, 'init_settings' ) );
 
-        // Initialize optimizations.
-        $this->init_optimizations();
-    }
+		// Initialize optimizations.
+		$this->init_optimizations();
+	}
 
-    /**
-     * Load plugin settings.
-     */
-    private function load_settings() {
-        $saved_settings = get_option( 'optimizations_ace_mc_settings', array() );
-        $this->settings = wp_parse_args( $saved_settings, $this->default_settings );
-    }
+	/**
+	 * Load plugin settings.
+	 */
+	private function load_settings() {
+		$saved_settings = get_option( 'optimizations_ace_mc_settings', array() );
+		$this->settings = wp_parse_args( $saved_settings, $this->default_settings );
+	}
 
-    /**
-     * Get setting value.
-     *
-     * @param string $key Setting key.
-     * @return mixed Setting value.
-     */
-    private function get_setting( $key ) {
-        return isset( $this->settings[ $key ] ) ? $this->settings[ $key ] : false;
-    }
+	/**
+	 * Get setting value.
+	 *
+	 * @param string $key Setting key.
+	 * @return mixed Setting value.
+	 */
+	private function get_setting( $key ) {
+		return isset( $this->settings[ $key ] ) ? $this->settings[ $key ] : false;
+	}
 
-    /**
-     * Initialize optimization functions.
-     */
-    private function init_optimizations() {
-        // WooCommerce optimizations.
-        $this->init_woocommerce_optimizations();
+	/**
+	 * Initialize optimization functions.
+	 */
+	private function init_optimizations() {
+		// WooCommerce optimizations.
+		$this->init_woocommerce_optimizations();
 
-        // WP Store Locator optimizations.
-        $this->init_wpsl_optimizations();
+		// WP Store Locator optimizations.
+		$this->init_wpsl_optimizations();
 
-        // WordPress admin optimizations.
-        $this->init_admin_optimizations();
-    }
+		// WordPress admin optimizations.
+		$this->init_admin_optimizations();
+	}
 
-    /**
-     * Initialize WooCommerce-specific optimizations.
-     */
-    private function init_woocommerce_optimizations() {
-        // Show empty categories in WooCommerce.
-        if ( $this->get_setting( 'woocommerce_show_empty_categories' ) ) {
-            add_filter( 'woocommerce_product_subcategories_hide_empty', '__return_false' );
-        }
+	/**
+	 * Initialize WooCommerce-specific optimizations.
+	 */
+	private function init_woocommerce_optimizations() {
+		// Show empty categories in WooCommerce.
+		if ( $this->get_setting( 'woocommerce_show_empty_categories' ) ) {
+			add_filter( 'woocommerce_product_subcategories_hide_empty', '__return_false' );
+		}
 
-        // Hide category product count in product archives.
-        if ( $this->get_setting( 'woocommerce_hide_category_count' ) ) {
-            add_filter( 'woocommerce_subcategory_count_html', '__return_false' );
-        }
+		// Hide category product count in product archives.
+		if ( $this->get_setting( 'woocommerce_hide_category_count' ) ) {
+			add_filter( 'woocommerce_subcategory_count_html', '__return_false' );
+		}
 
-        // Add order count column to users admin.
-        if ( $this->get_setting( 'woocommerce_user_order_count_column' ) && is_admin() && current_user_can( 'list_users' ) ) {
-            add_filter( 'manage_users_columns', array( $this, 'add_user_order_count_column' ) );
-            add_filter( 'manage_users_custom_column', array( $this, 'display_user_order_count_column' ), 10, 3 );
-            add_filter( 'manage_users_sortable_columns', array( $this, 'make_user_order_count_sortable' ) );
-        }
-    }
+		// Add order count column to users admin.
+		if ( $this->get_setting( 'woocommerce_user_order_count_column' ) && is_admin() && current_user_can( 'list_users' ) ) {
+			add_filter( 'manage_users_columns', array( $this, 'add_user_order_count_column' ) );
+			add_filter( 'manage_users_custom_column', array( $this, 'display_user_order_count_column' ), 10, 3 );
+			add_filter( 'manage_users_sortable_columns', array( $this, 'make_user_order_count_sortable' ) );
+		}
+	}
 
-    /**
-     * Initialize WP Store Locator optimizations.
-     */
-    private function init_wpsl_optimizations() {
-        // Show store categories in store locator.
-        if ( $this->get_setting( 'wpsl_show_store_categories' ) ) {
-            add_filter( 'wpsl_store_meta', array( $this, 'add_store_categories_to_meta' ), 10, 2 );
-            add_filter( 'wpsl_info_window_template', array( $this, 'customize_info_window_template' ) );
-        }
+	/**
+	 * Initialize WP Store Locator optimizations.
+	 */
+	private function init_wpsl_optimizations() {
+		// Show store categories in store locator.
+		if ( $this->get_setting( 'wpsl_show_store_categories' ) ) {
+			add_filter( 'wpsl_store_meta', array( $this, 'add_store_categories_to_meta' ), 10, 2 );
+			add_filter( 'wpsl_info_window_template', array( $this, 'customize_info_window_template' ) );
+		}
 
-        // Disable REST API for store locator post type.
-        if ( $this->get_setting( 'wpsl_disable_rest_api' ) ) {
-            add_filter( 'wpsl_post_type_args', array( $this, 'custom_post_type_args' ) );
-        }
-    }
+		// Disable REST API for store locator post type.
+		if ( $this->get_setting( 'wpsl_disable_rest_api' ) ) {
+			add_filter( 'wpsl_post_type_args', array( $this, 'custom_post_type_args' ) );
+		}
+	}
 
     /**
      * Initialize WordPress admin optimizations.
