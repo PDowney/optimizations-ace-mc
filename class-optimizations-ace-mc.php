@@ -35,12 +35,12 @@ class Optimizations_Ace_Mc {
      * @var array
      */
     private $default_settings = array(
-        'woocommerce_show_empty_categories'    => true,
-        'woocommerce_hide_category_count'      => true,
-        'woocommerce_user_order_count_column'  => true,
-        'wpsl_show_store_categories'           => true,
-        'wpsl_disable_rest_api'                => true,
-        'admin_user_registration_date_column'  => true,
+        'woocommerce_show_empty_categories'   => true,
+        'woocommerce_hide_category_count'     => true,
+        'woocommerce_user_order_count_column' => true,
+        'wpsl_show_store_categories'          => true,
+        'wpsl_disable_rest_api'               => true,
+        'admin_user_registration_date_column' => true,
     );
 
     /**
@@ -335,7 +335,16 @@ class Optimizations_Ace_Mc {
             array( $this, 'sanitize_settings' )
         );
 
-        // WooCommerce settings section.
+        // Initialize settings sections.
+        $this->init_woocommerce_settings();
+        $this->init_wpsl_settings();
+        $this->init_admin_settings();
+    }
+
+    /**
+     * Initialize WooCommerce settings section.
+     */
+    private function init_woocommerce_settings() {
         add_settings_section(
             'woocommerce_section',
             __( 'WooCommerce Optimizations', 'optimizations-ace-mc' ),
@@ -378,8 +387,12 @@ class Optimizations_Ace_Mc {
                 'description' => __( 'Add an order count column to the WordPress Users admin table.', 'optimizations-ace-mc' ),
             )
         );
+    }
 
-        // WP Store Locator settings section.
+    /**
+     * Initialize WP Store Locator settings section.
+     */
+    private function init_wpsl_settings() {
         add_settings_section(
             'wpsl_section',
             __( 'WP Store Locator Optimizations', 'optimizations-ace-mc' ),
@@ -410,8 +423,12 @@ class Optimizations_Ace_Mc {
                 'description' => __( 'Disable REST API endpoint for WP Store Locator post type for security.', 'optimizations-ace-mc' ),
             )
         );
+    }
 
-        // WordPress Admin settings section.
+    /**
+     * Initialize WordPress admin settings section.
+     */
+    private function init_admin_settings() {
         add_settings_section(
             'admin_section',
             __( 'WordPress Admin Optimizations', 'optimizations-ace-mc' ),
@@ -442,7 +459,7 @@ class Optimizations_Ace_Mc {
         $sanitized = array();
 
         // Sanitize each setting based on its type.
-        foreach ( $this->default_settings as $key => $default_value ) {
+        foreach ( $this->default_settings as $key => $value ) {
             if ( isset( $input[ $key ] ) ) {
                 $sanitized[ $key ] = (bool) $input[ $key ];
             } else {
@@ -504,27 +521,14 @@ class Optimizations_Ace_Mc {
             wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'optimizations-ace-mc' ) );
         }
 
-        // Note: Form submission is handled automatically by WordPress Settings API.
-        // The settings_fields() function handles CSRF protection via nonces.
-        if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ) {
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings saved successfully!', 'optimizations-ace-mc' ) . '</p></div>';
-        }
+        // Display success message if settings were updated.
+        $this->display_admin_notices();
         ?>
         <div class="wrap">
             <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
             
-            <div class="notice notice-info">
-                <p>
-                    <strong><?php esc_html_e( 'Plugin Information:', 'optimizations-ace-mc' ); ?></strong>
-                    <?php esc_html_e( 'This plugin provides pre-configured optimizations for WooCommerce, WP Store Locator, and WordPress admin interfaces.', 'optimizations-ace-mc' ); ?>
-                </p>
-                <p>
-                    <strong><?php esc_html_e( 'Version:', 'optimizations-ace-mc' ); ?></strong> <?php echo esc_html( OPTIMIZATIONS_ACE_MC_VERSION ); ?> |
-                    <strong><?php esc_html_e( 'WordPress:', 'optimizations-ace-mc' ); ?></strong> <?php esc_html_e( '6.5+ required', 'optimizations-ace-mc' ); ?> |
-                    <strong><?php esc_html_e( 'PHP:', 'optimizations-ace-mc' ); ?></strong> <?php esc_html_e( '7.4+ required', 'optimizations-ace-mc' ); ?>
-                </p>
-            </div>
-
+            <?php $this->display_plugin_info(); ?>
+            
             <form method="post" action="options.php">
                 <?php
                 settings_fields( 'optimizations_ace_mc_group' );
@@ -533,45 +537,102 @@ class Optimizations_Ace_Mc {
                 ?>
             </form>
 
-            <div class="card">
-                <h2><?php esc_html_e( 'Plugin Dependencies', 'optimizations-ace-mc' ); ?></h2>
-                <p><?php esc_html_e( 'This plugin is designed to work with the following plugins:', 'optimizations-ace-mc' ); ?></p>
-                <ul>
-                    <li>
-                        <strong>WooCommerce:</strong> 
-                        <?php
-                        if ( class_exists( 'WooCommerce' ) ) {
-                            echo '<span style="color: green;">✓ ' . esc_html__( 'Active', 'optimizations-ace-mc' ) . '</span>';
-                        } else {
-                            echo '<span style="color: orange;">! ' . esc_html__( 'Not detected', 'optimizations-ace-mc' ) . '</span>';
-                        }
-                        ?>
-                    </li>
-                    <li>
-                        <strong>WP Store Locator:</strong> 
-                        <?php
-                        if ( class_exists( 'WP_Store_locator' ) || function_exists( 'wpsl_store_header_template' ) ) {
-                            echo '<span style="color: green;">✓ ' . esc_html__( 'Active', 'optimizations-ace-mc' ) . '</span>';
-                        } else {
-                            echo '<span style="color: orange;">! ' . esc_html__( 'Not detected', 'optimizations-ace-mc' ) . '</span>';
-                        }
-                        ?>
-                    </li>
-                </ul>
-                <p><em><?php esc_html_e( 'Note: Plugin features will only be active when their corresponding dependencies are installed and activated.', 'optimizations-ace-mc' ); ?></em></p>
-            </div>
-
-            <div class="card">
-                <h2><?php esc_html_e( 'Support & Documentation', 'optimizations-ace-mc' ); ?></h2>
-                <p>
-                    <?php esc_html_e( 'For support, bug reports, or feature requests:', 'optimizations-ace-mc' ); ?>
-                    <a href="https://github.com/PDowney/optimizations-ace-mc" target="_blank" rel="noopener noreferrer">
-                        <?php esc_html_e( 'Visit the GitHub repository', 'optimizations-ace-mc' ); ?>
-                    </a>
-                </p>
-            </div>
+            <?php
+            $this->display_dependencies_info();
+            $this->display_support_info();
+            $this->output_admin_styles();
+            ?>
         </div>
+        <?php
+    }
 
+    /**
+     * Display admin notices.
+     */
+    private function display_admin_notices() {
+        // Note: Form submission is handled automatically by WordPress Settings API.
+        // The settings_fields() function handles CSRF protection via nonces.
+        if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ) {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings saved successfully!', 'optimizations-ace-mc' ) . '</p></div>';
+        }
+    }
+
+    /**
+     * Display plugin information.
+     */
+    private function display_plugin_info() {
+        ?>
+        <div class="notice notice-info">
+            <p>
+                <strong><?php esc_html_e( 'Plugin Information:', 'optimizations-ace-mc' ); ?></strong>
+                <?php esc_html_e( 'This plugin provides pre-configured optimizations for WooCommerce, WP Store Locator, and WordPress admin interfaces.', 'optimizations-ace-mc' ); ?>
+            </p>
+            <p>
+                <strong><?php esc_html_e( 'Version:', 'optimizations-ace-mc' ); ?></strong> <?php echo esc_html( OPTIMIZATIONS_ACE_MC_VERSION ); ?> |
+                <strong><?php esc_html_e( 'WordPress:', 'optimizations-ace-mc' ); ?></strong> <?php esc_html_e( '6.5+ required', 'optimizations-ace-mc' ); ?> |
+                <strong><?php esc_html_e( 'PHP:', 'optimizations-ace-mc' ); ?></strong> <?php esc_html_e( '7.4+ required', 'optimizations-ace-mc' ); ?>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Display plugin dependencies information.
+     */
+    private function display_dependencies_info() {
+        ?>
+        <div class="card">
+            <h2><?php esc_html_e( 'Plugin Dependencies', 'optimizations-ace-mc' ); ?></h2>
+            <p><?php esc_html_e( 'This plugin is designed to work with the following plugins:', 'optimizations-ace-mc' ); ?></p>
+            <ul>
+                <li>
+                    <strong>WooCommerce:</strong> 
+                    <?php
+                    if ( class_exists( 'WooCommerce' ) ) {
+                        echo '<span style="color: green;">✓ ' . esc_html__( 'Active', 'optimizations-ace-mc' ) . '</span>';
+                    } else {
+                        echo '<span style="color: orange;">! ' . esc_html__( 'Not detected', 'optimizations-ace-mc' ) . '</span>';
+                    }
+                    ?>
+                </li>
+                <li>
+                    <strong>WP Store Locator:</strong> 
+                    <?php
+                    if ( class_exists( 'WP_Store_locator' ) || function_exists( 'wpsl_store_header_template' ) ) {
+                        echo '<span style="color: green;">✓ ' . esc_html__( 'Active', 'optimizations-ace-mc' ) . '</span>';
+                    } else {
+                        echo '<span style="color: orange;">! ' . esc_html__( 'Not detected', 'optimizations-ace-mc' ) . '</span>';
+                    }
+                    ?>
+                </li>
+            </ul>
+            <p><em><?php esc_html_e( 'Note: Plugin features will only be active when their corresponding dependencies are installed and activated.', 'optimizations-ace-mc' ); ?></em></p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Display support information.
+     */
+    private function display_support_info() {
+        ?>
+        <div class="card">
+            <h2><?php esc_html_e( 'Support & Documentation', 'optimizations-ace-mc' ); ?></h2>
+            <p>
+                <?php esc_html_e( 'For support, bug reports, or feature requests:', 'optimizations-ace-mc' ); ?>
+                <a href="https://github.com/PDowney/optimizations-ace-mc" target="_blank" rel="noopener noreferrer">
+                    <?php esc_html_e( 'Visit the GitHub repository', 'optimizations-ace-mc' ); ?>
+                </a>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     * Output admin page styles.
+     */
+    private function output_admin_styles() {
+        ?>
         <style>
             .card {
                 background: #fff;
