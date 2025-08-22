@@ -202,7 +202,7 @@ jobs:
             - \`@gemini-cli write tests for X\` - Test implementation guidance
             - \`@gemini-cli debug this issue\` - Bug investigation and resolution
             
-            > 🔄 **Note:** This is an AI-generated response for Optimizations ACE MC v1.0.5. Please review suggestions carefully and test thoroughly.
+            > 🔄 **Note:** This is an AI-generated response for Optimizations ACE MC (latest version). Please review suggestions carefully and test thoroughly.
             
             **Analysis Date:** ${new Date().toISOString()}
             `;

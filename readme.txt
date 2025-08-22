@@ -4,7 +4,7 @@ Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -68,7 +68,7 @@ Yes, this plugin focuses on specific admin and functionality enhancements rather
 
 == Changelog ==
 
-= Unreleased =
+= 1.0.6 - 2025-08-22 =
 * Added: Comprehensive admin settings page for managing all plugin optimizations
 * Added: User-configurable options for WooCommerce, WP Store Locator, and WordPress admin features  
 * Added: Individual enable/disable controls for each optimization feature
@@ -79,6 +79,7 @@ Yes, this plugin focuses on specific admin and functionality enhancements rather
 * Changed: Features load conditionally based on user settings
 * Fixed: Array alignment issues to meet WordPress coding standards
 * Fixed: Removed unused variables and refactored long methods for better code quality
+* Fixed: Converted entire codebase to WordPress-standard tab indentation
 * Fixed: Updated PHPCS configuration to properly allow tabs for indentation per WordPress standards
 
 = 1.0.5 - 2025-08-11 =

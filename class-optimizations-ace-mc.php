@@ -176,7 +176,7 @@ class Optimizations_Ace_Mc {
 	 * @return string
 	 */
 	public function display_user_order_count_column( $output, $column_name, $user_id ) {
-		// Security check - only for admins with list_users capability
+		// Security check - only for admins with list_users capability.
 		if ( ! is_admin() || ! current_user_can( 'list_users' ) ) {
 			return $output;
 		}

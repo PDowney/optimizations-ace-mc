@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.6] - 2025-08-22
+
 ### Added
 - **Settings Page:**
   - Comprehensive admin settings page for managing all plugin optimizations
@@ -38,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Refactored long methods (init_settings, settings_page) into smaller, focused methods
   - Improved code maintainability and readability
   - Enhanced method separation for better testing and debugging
-  - **PARTIAL:** Started conversion from space indentation to WordPress-standard tab indentation (ongoing)
+  - Converted entire codebase from space indentation to WordPress-standard tab indentation
   - Updated PHPCS configuration to allow tabs for indentation per WordPress standards
 
 ## [1.0.5] - 2025-08-11
