@@ -9,25 +9,177 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-10T00:00:00+00:00\n"
+"POT-Creation-Date: 2025-08-22T00:00:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: optimizations-ace-mc\n"
 
-#: optimizations-ace-mc.php:170
+#: class-optimizations-ace-mc.php:170
 msgid "Order Count"
 msgstr ""
 
-#: optimizations-ace-mc.php:260
+#: class-optimizations-ace-mc.php:260
 msgid "Certifications:"
 msgstr ""
 
-#: optimizations-ace-mc.php:287
+#: class-optimizations-ace-mc.php:287
 msgid "Registration Date"
 msgstr ""
 
-#: optimizations-ace-mc.php:306
+#: class-optimizations-ace-mc.php:306
 msgid "Unknown"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:325
+msgid "ACE MC Optimizations"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:338
+msgid "WooCommerce Optimizations"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:344
+msgid "Show Empty Categories"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:351
+msgid "Show empty product categories in WooCommerce category listings."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:356
+msgid "Hide Category Product Count"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:363
+msgid "Hide the product count numbers in category listings."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:368
+msgid "User Order Count Column"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:375
+msgid "Add an order count column to the WordPress Users admin table."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:381
+msgid "WP Store Locator Optimizations"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:387
+msgid "Show Store Categories"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:394
+msgid "Display store categories in the store locator info windows as \"Certifications\"."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:399
+msgid "Disable REST API"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:406
+msgid "Disable REST API endpoint for WP Store Locator post type for security."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:412
+msgid "WordPress Admin Optimizations"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:418
+msgid "User Registration Date Column"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:425
+msgid "Add a registration date column to the WordPress Users admin table."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:445
+msgid "Configure WooCommerce-specific optimizations. These features enhance the WooCommerce user experience and admin functionality."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:451
+msgid "Configure WP Store Locator optimizations. These features enhance store location functionality and security."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:457
+msgid "Configure WordPress admin interface optimizations. These features enhance the admin user experience."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:483
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:487
+msgid "Settings saved successfully!"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:493
+msgid "Plugin Information:"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:494
+msgid "This plugin provides pre-configured optimizations for WooCommerce, WP Store Locator, and WordPress admin interfaces."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:497
+msgid "Version:"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:498
+msgid "WordPress:"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:498
+msgid "6.5+ required"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:499
+msgid "PHP:"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:499
+msgid "7.4+ required"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:508
+msgid "Plugin Dependencies"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:509
+msgid "This plugin is designed to work with the following plugins:"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:514
+msgid "Active"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:516
+msgid "Not detected"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:525
+msgid "Active"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:527
+msgid "Not detected"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:531
+msgid "Note: Plugin features will only be active when their corresponding dependencies are installed and activated."
+msgstr ""
+
+#: class-optimizations-ace-mc.php:535
+msgid "Support & Documentation"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:537
+msgid "For support, bug reports, or feature requests:"
+msgstr ""
+
+#: class-optimizations-ace-mc.php:539
+msgid "Visit the GitHub repository"
 msgstr ""
 
 #. Plugin Name of the plugin/theme

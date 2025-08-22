@@ -12,42 +12,71 @@ A lightweight WordPress optimization plugin with pre-configured performance enha
 
 == Description ==
 
-Optimizations ACE MC is a simple, lightweight WordPress optimization plugin that runs pre-configured performance enhancements to improve your website's speed and efficiency.
+Optimizations ACE MC is a comprehensive WordPress optimization plugin that provides user-configurable performance enhancements for WooCommerce, WP Store Locator, and WordPress admin interfaces.
 
 = Features =
 
-* Remove WordPress version from head
-* Remove unnecessary meta tags
-* Remove emoji scripts and styles
-* Disable REST API for non-logged-in users
-* Remove query strings from static resources
+**WooCommerce Optimizations:**
+* Show empty product categories in archives (configurable)
+* Hide category product count in product archives (configurable)
+* Add user order count column to admin users table with sorting (configurable)
+
+**WP Store Locator Optimizations:**
+* Display store categories in store info windows (configurable)
+* Disable REST API for store locator post type for enhanced security (configurable)
+
+**WordPress Admin Optimizations:**
+* Add user registration date column to admin users table with sorting (configurable)
+
+**Settings Management:**
+* Comprehensive admin settings page for all optimizations
+* Individual enable/disable controls for each feature
+* Plugin dependency status indicators
+* User-friendly interface with clear descriptions
 
 = Requirements =
 
 * WordPress 6.5 or higher
 * PHP 7.4 or higher
+* WooCommerce (for WooCommerce-specific features)
+* WP Store Locator (for store locator features)
 
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/optimizations-ace-mc` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. The optimization features will be automatically enabled upon activation.
+3. Navigate to **Settings > Optimizations ACE MC** to configure which optimization features you want to enable.
+4. Enable or disable individual optimizations based on your site's needs and available plugins.
 
 == Frequently Asked Questions ==
 
 = Do I need to configure anything? =
 
-No, all optimizations are automatically enabled when the plugin is activated. This plugin is designed to be simple and work out of the box.
+The plugin comes with default settings enabled, but you can customize which optimizations to use via the **Settings > Optimizations ACE MC** admin page. Each feature can be individually enabled or disabled.
+
+= What happens if I don't have WooCommerce or WP Store Locator installed? =
+
+The plugin will detect which plugins are available and only show relevant optimization options. Features for missing plugins will be clearly marked as inactive and won't affect your site.
 
 = Will this plugin slow down my site? =
 
-No, this plugin is designed to improve performance by removing unnecessary code and optimizations that can slow down your site.
+No, this plugin is designed to improve performance by adding useful admin enhancements and optimizations. All features are optional and can be disabled if not needed.
 
 = Is this plugin compatible with other optimization plugins? =
 
-Yes, this plugin focuses on basic optimizations and should work alongside other optimization plugins.
+Yes, this plugin focuses on specific admin and functionality enhancements rather than general optimization, so it should work alongside other optimization plugins.
 
 == Changelog ==
+
+= Unreleased =
+* Added: Comprehensive admin settings page for managing all plugin optimizations
+* Added: User-configurable options for WooCommerce, WP Store Locator, and WordPress admin features  
+* Added: Individual enable/disable controls for each optimization feature
+* Added: Plugin dependency status indicators with visual feedback
+* Security: Fixed improper nonce verification in settings page form submission
+* Security: Enhanced CSRF protection using proper WordPress Settings API handling
+* Changed: All optimization features are now optional and user-configurable
+* Changed: Features load conditionally based on user settings
 
 = 1.0.5 - 2025-08-11 =
 * Security: Fixed critical code injection vulnerabilities in GitHub Actions workflows

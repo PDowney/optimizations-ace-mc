@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Settings Page:**
+  - Comprehensive admin settings page for managing all plugin optimizations
+  - User-configurable options for WooCommerce, WP Store Locator, and WordPress admin features
+  - Individual enable/disable controls for each optimization feature
+  - Plugin dependency status indicators with visual feedback
+  - Responsive admin interface with proper WordPress styling
+  - Full internationalization support for all settings text
+
+### Security
+- **Settings Security:**
+  - Fixed improper nonce verification in settings page form submission
+  - Implemented proper WordPress Settings API nonce handling
+  - Enhanced CSRF protection by removing manual nonce checks in favor of WordPress core handling
+  - Maintained proper capability checks (manage_options) for admin access
+  - All form inputs sanitized using WordPress Settings API sanitization callbacks
+
+### Changed
+- **Plugin Architecture:**
+  - All optimization features are now optional and user-configurable
+  - Features load conditionally based on user settings instead of being always active
+  - Improved plugin structure with centralized settings management
+  - Enhanced user experience with clear feature descriptions and dependency information
+
 ## [1.0.5] - 2025-08-11
 
 ### Security
