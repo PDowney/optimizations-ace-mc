@@ -33,15 +33,20 @@ jobs:
 
       - name: Determine analysis type
         id: analysis-type
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
         run: |
-          if [ "${{ github.event_name }}" = "issues" ]; then
+          if [ "$EVENT_NAME" = "issues" ]; then
             echo "type=issue-analysis" >> $GITHUB_OUTPUT
-            echo "Issue: ${{ github.event.issue.title }}"
-            echo "Author: ${{ github.event.issue.user.login }}"
-          elif [ "${{ github.event_name }}" = "issue_comment" ]; then
+            echo "Issue: $ISSUE_TITLE"
+            echo "Author: $ISSUE_AUTHOR"
+          elif [ "$EVENT_NAME" = "issue_comment" ]; then
             echo "type=comment-analysis" >> $GITHUB_OUTPUT
-            echo "Comment on issue: ${{ github.event.issue.title }}"
-            echo "Comment author: ${{ github.event.comment.user.login }}"
+            echo "Comment on issue: $ISSUE_TITLE"
+            echo "Comment author: $COMMENT_AUTHOR"
           else
             echo "type=skip" >> $GITHUB_OUTPUT
           fi
@@ -109,8 +114,9 @@ jobs:
       - name: Run Gemini Analysis
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANALYSIS_SKIPPED: ${{ steps.analysis-type.outputs.analysis-skipped }}
         run: |
-          if [ "${{ steps.analysis-type.outputs.analysis-skipped }}" = "true" ]; then
+          if [ "$ANALYSIS_SKIPPED" = "true" ]; then
             echo "Analysis skipped"
             exit 0
           fi
