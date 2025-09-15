@@ -443,37 +443,30 @@ jobs:
             if (isPR && prNumber && prNumber !== '' && prNumber !== 'undefined') {
               // Create an issue for failed PR analysis
               const title = '🚨 AI Analysis Failed for PR #' + prNumber;
-              const body = `
-              ## AI Code Analysis Failure
-              
-              The automated AI code analysis workflow failed for PR #${prNumber}.
-              
-              **Pull Request:** #${prNumber}
-              **Event Type:** ${eventName}
-              **Failure Time:** ${new Date().toISOString()}
-              **Workflow Run:** ${workflowUrl}
-            
-              
-              ### Possible Causes
-              - API rate limits or temporary service issues
-              - Large diff size exceeding analysis limits  
-              - Invalid file formats or encoding issues
-              - GEMINI_API_KEY configuration problems
-              
-              ### Manual Actions Required
-              1. 🔍 Review the failed workflow logs for specific error details
-              2. 🔄 Re-run the analysis workflow if it was a temporary issue
-              3. 🛠️ Check GEMINI_API_KEY secret configuration
-              4. 👥 Proceed with manual code review for the PR
-              
-              **Note:** This does not necessarily indicate issues with the PR code itself.
-              `;
+              const body = '## AI Code Analysis Failure\n\n' +
+                'The automated AI code analysis workflow failed for PR #' + prNumber + '.\n\n' +
+                '**Pull Request:** #' + prNumber + '\n' +
+                '**Event Type:** ' + eventName + '\n' +
+                '**Failure Time:** ' + new Date().toISOString() + '\n' +
+                '**Workflow Run:** ' + workflowUrl + '\n\n' +
+                '### Possible Causes\n' +
+                '- API rate limits or temporary service issues\n' +
+                '- Large diff size exceeding analysis limits\n' +
+                '- Invalid file formats or encoding issues\n' +
+                '- GEMINI_API_KEY configuration problems\n\n' +
+                '### Manual Actions Required\n' +
+                '1. 🔍 Review the failed workflow logs for specific error details\n' +
+                '2. 🔄 Re-run the analysis workflow if it was a temporary issue\n' +
+                '3. 🛠️ Check GEMINI_API_KEY secret configuration\n' +
+                '4. 👥 Proceed with manual code review for the PR\n\n' +
+                '**Note:** This does not necessarily indicate issues with the PR code itself.';
               
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: title,
-                body: body
+                body: body,
+                labels: ['ai-analysis', 'workflow-failure', 'needs-attention']
               });
               console.log('✅ Created failure issue for PR #' + prNumber);
             } else {
@@ -482,7 +475,3 @@ jobs:
               console.log('🔗 Workflow run: ' + workflowUrl);
               console.log('📋 Manual review recommended - check workflow logs for details');
             }
-              title: title,
-              body: body,
-              labels: ['ai-analysis', 'workflow-failure', 'needs-attention']
-            });
