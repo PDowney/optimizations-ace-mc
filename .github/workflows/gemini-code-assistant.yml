@@ -109,10 +109,60 @@ jobs:
           
           echo "✅ Analysis script created successfully"
 
+      - name: Get Code Changes
+        id: get-changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.before || '' }}
+          HEAD_SHA: ${{ github.sha }}
+          REPO_FULL_NAME: ${{ github.repository }}
+        run: |
+          echo "📋 Collecting code changes for analysis..."
+          
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            # For PRs, get the diff between base and head
+            PR_BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            PR_HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+            curl -H "Authorization: token $GITHUB_TOKEN" \
+                 -H "Accept: application/vnd.github.v3.diff" \
+                 "https://api.github.com/repos/$REPO_FULL_NAME/compare/$PR_BASE_SHA..$PR_HEAD_SHA" \
+                 > code_changes.diff
+          elif [ "$EVENT_NAME" = "push" ]; then
+            # For pushes, get the diff from the previous commit
+            if [ -n "$BASE_SHA" ] && [ "$BASE_SHA" != "0000000000000000000000000000000000000000" ]; then
+              curl -H "Authorization: token $GITHUB_TOKEN" \
+                   -H "Accept: application/vnd.github.v3.diff" \
+                   "https://api.github.com/repos/$REPO_FULL_NAME/compare/$BASE_SHA..$HEAD_SHA" \
+                   > code_changes.diff
+            else
+              echo "Initial commit - showing full content of changed files" > code_changes.diff
+              git show --name-only $HEAD_SHA | head -10 | while read file; do
+                if [ -f "$file" ]; then
+                  echo "=== $file ===" >> code_changes.diff
+                  head -50 "$file" >> code_changes.diff
+                  echo "" >> code_changes.diff
+                fi
+              done
+            fi
+          else
+            echo "No code changes available for this event type" > code_changes.diff
+          fi
+          
+          # Check if we got changes
+          if [ -s code_changes.diff ]; then
+            echo "✅ Code changes collected: $(wc -l < code_changes.diff) lines"
+            echo "changes-available=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ No code changes found"
+            echo "changes-available=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create Analysis Prompt
         env:
           PR_TITLE: ${{ github.event.pull_request.title || format('Push Analysis - {0}', github.ref_name) }}
           PR_AUTHOR: ${{ github.event.pull_request.user.login || github.actor }}
+          CHANGES_AVAILABLE: ${{ steps.get-changes.outputs.changes-available }}
         run: |
           echo "📝 Creating analysis prompt..."
           echo "You are an expert WordPress plugin developer and security consultant." > analysis_prompt.txt
@@ -129,6 +179,16 @@ jobs:
           echo "4. Best practice recommendations" >> analysis_prompt.txt
           echo "" >> analysis_prompt.txt
           echo "Provide specific, actionable feedback." >> analysis_prompt.txt
+          echo "" >> analysis_prompt.txt
+          
+          # Add the actual code changes
+          if [ "$CHANGES_AVAILABLE" = "true" ]; then
+            echo "Here are the code changes to analyze:" >> analysis_prompt.txt
+            echo "" >> analysis_prompt.txt
+            cat code_changes.diff >> analysis_prompt.txt
+          else
+            echo "No code changes were detected in this commit." >> analysis_prompt.txt
+          fi
 
       - name: Run AI Analysis
         id: ai-analysis
