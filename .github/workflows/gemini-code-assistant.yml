@@ -108,8 +108,6 @@ jobs:
             echo "⚠️ No code changes found"
             echo "changes-available=false" >> $GITHUB_OUTPUT
           fi
-            echo "changes-available=false" >> $GITHUB_OUTPUT
-          fi
 
       - name: Install Google AI SDK and Create Analysis Script
         run: |
