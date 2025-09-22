@@ -71,27 +71,56 @@ jobs:
               
               # Try API first with better error checking
               echo "🌐 Attempting GitHub API diff..."
+              echo "🔍 URL: https://api.github.com/repos/$REPO_FULL_NAME/compare/$BASE_SHA..$HEAD_SHA"
+              
               HTTP_CODE=$(curl -s -w "%{http_code}" \
                    -H "Authorization: token $GITHUB_TOKEN" \
                    -H "Accept: application/vnd.github.v3.diff" \
                    "https://api.github.com/repos/$REPO_FULL_NAME/compare/$BASE_SHA..$HEAD_SHA" \
-                   -o code_changes.diff)
+                   -o code_changes.diff 2>api_error.log)
               
               echo "🔍 API returned HTTP $HTTP_CODE"
               
+              # 404 means the commit comparison doesn't exist - this is an error
+              if [ "$HTTP_CODE" = "404" ]; then
+                echo "❌ GitHub API returned 404 - commit comparison not found"
+                echo "🔍 This could mean:"
+                echo "   - One of the commit SHAs doesn't exist in the repository" 
+                echo "   - The repository path is incorrect"
+                echo "   - The commits are not in the same branch history"
+                echo "🔄 Trying git diff as fallback..."
+              elif [ "$HTTP_CODE" != "200" ]; then
+                echo "❌ GitHub API failed with HTTP $HTTP_CODE"
+                echo "🔍 Error details:"
+                cat api_error.log 2>/dev/null || echo "No error details available"
+              fi
+              
               # Check if API call was successful (200 status and file has content)
               if [ "$HTTP_CODE" != "200" ] || [ ! -s code_changes.diff ]; then
-                echo "⚠️ API diff failed (HTTP $HTTP_CODE), using git diff..."
+                echo "⚠️ API diff failed, using git diff as fallback..."
                 
-                # Use git diff as fallback  
-                git diff $BASE_SHA..$HEAD_SHA > code_changes.diff
+                # Use git diff as fallback with error checking
+                echo "🔧 Running: git diff $BASE_SHA..$HEAD_SHA"
+                if git diff "$BASE_SHA".."$HEAD_SHA" > code_changes.diff 2>git_error.log; then
+                  echo "✅ Git diff successful"
+                else
+                  echo "❌ Git diff also failed:"
+                  cat git_error.log 2>/dev/null || echo "No git error details"
+                fi
                 
                 # If git diff also fails or is empty, use git show
                 if [ ! -s code_changes.diff ]; then
                   echo "⚠️ No diff available, showing recent commit changes..."
-                  git show --stat $HEAD_SHA > code_changes.diff
+                  echo "🔧 Running: git show --stat $HEAD_SHA"
+                  git show --stat "$HEAD_SHA" > code_changes.diff 2>>git_error.log
                   echo "" >> code_changes.diff
-                  git show $HEAD_SHA >> code_changes.diff
+                  git show "$HEAD_SHA" >> code_changes.diff 2>>git_error.log
+                  
+                  if [ -s code_changes.diff ]; then
+                    echo "✅ Git show successful"
+                  else
+                    echo "❌ All methods failed - no code changes available"
+                  fi
                 fi
               else
                 echo "✅ GitHub API diff successful"
