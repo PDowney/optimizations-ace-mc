@@ -4,7 +4,7 @@ Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,19 @@ No, this plugin is designed to improve performance by adding useful admin enhanc
 Yes, this plugin focuses on specific admin and functionality enhancements rather than general optimization, so it should work alongside other optimization plugins.
 
 == Changelog ==
+
+= 1.0.7 - 2025-09-15 =
+* Added: AI-powered code analysis workflow using Google Gemini for automated security scanning
+* Added: Comprehensive WordPress coding standards compliance checking in CI/CD
+* Added: Performance analysis for database queries and resource optimization
+* Added: Pull request and push event analysis with detailed security feedback
+* Enhanced: Dynamic workflow handling for both PR and push events with unified output
+* Enhanced: Real-time code diff analysis with focus on security implications
+* Security: Environment variable protection against command injection vulnerabilities
+* Security: Secure API key management through GitHub repository secrets
+* Fixed: Resolved 404 errors when posting PR comments on push events
+* Fixed: JavaScript syntax errors and YAML parsing issues in workflow scripts
+* Fixed: Improved workflow reliability and comprehensive error handling
 
 = 1.0.6 - 2025-08-22 =
 * Added: Comprehensive admin settings page for managing all plugin optimizations
