@@ -99,13 +99,6 @@ jobs:
           else
             echo "No code changes available for this event type" > code_changes.diff
           fi
-                  echo "" >> code_changes.diff
-                fi
-              done
-            fi
-          else
-            echo "No code changes available for this event type" > code_changes.diff
-          fi
           
           # Check if we got changes
           if [ -s code_changes.diff ]; then
@@ -113,6 +106,8 @@ jobs:
             echo "changes-available=true" >> $GITHUB_OUTPUT
           else
             echo "⚠️ No code changes found"
+            echo "changes-available=false" >> $GITHUB_OUTPUT
+          fi
             echo "changes-available=false" >> $GITHUB_OUTPUT
           fi
 
