@@ -122,22 +122,24 @@ jobs:
         run: |
           echo "📋 Scanning codebase for relevant context..."
           
-          # Get recent commits for context with enhanced error handling
+          # Get recent commits for context with git as primary method
           echo "📜 Collecting recent commits..." 
           if git log --oneline -5 > recent_commits.txt 2>git_error.log; then
-            echo "✅ Recent commits collected"
+            echo "✅ Recent commits collected via git"
           else
-            echo "⚠️ Failed to get recent commits:"
+            echo "⚠️ Failed to get recent commits via git:"
             cat git_error.log 2>/dev/null || echo "No git error details"
             echo "No recent commits available" > recent_commits.txt
           fi
           
-          # Get main plugin files for context with better error handling
+          # Get main plugin files for context using reliable file system operations
           echo "📁 Collecting plugin file structure..."
           echo "🔍 Main plugin files:" > codebase_context.txt
           
-          # Find PHP files (excluding hidden directories) with error handling
-          if find . -name "*.php" -path "./.*" -prune -o -name "*.php" -print 2>/dev/null | head -10 > found_files.txt; then
+          # Use git ls-files as primary method (more reliable than find)
+          echo "🔧 Using git ls-files (primary method)..."
+          if git ls-files "*.php" | head -10 > found_files.txt 2>git_error.log; then
+            echo "✅ Git ls-files successful"
             while read file; do
               if [ -f "$file" ] && [ -n "$file" ]; then
                 echo "=== $file ===" >> codebase_context.txt
@@ -151,8 +153,23 @@ jobs:
               fi
             done < found_files.txt
           else
-            echo "⚠️ Failed to find PHP files"
-            echo "No PHP files found" >> codebase_context.txt
+            echo "⚠️ Git ls-files failed, using find as fallback..."
+            cat git_error.log 2>/dev/null || echo "No git error details"
+            
+            # Find as fallback method
+            if find . -name "*.php" -path "./.*" -prune -o -name "*.php" -print 2>/dev/null | head -10 > found_files.txt; then
+              echo "✅ Find fallback successful"
+              while read file; do
+                if [ -f "$file" ] && [ -n "$file" ]; then
+                  echo "=== $file ===" >> codebase_context.txt
+                  head -30 "$file" >> codebase_context.txt 2>/dev/null
+                  echo "" >> codebase_context.txt
+                fi
+              done < found_files.txt
+            else
+              echo "❌ Both git and find methods failed"
+              echo "No PHP files found" >> codebase_context.txt
+            fi
           fi
           
           # Add recent commits to context
