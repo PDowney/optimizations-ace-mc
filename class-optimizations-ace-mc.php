@@ -35,12 +35,12 @@ class Optimizations_Ace_Mc {
 	 * @var array
 	 */
 	private $default_settings = array(
-		'woocommerce_show_empty_categories'   => true,
-		'woocommerce_hide_category_count'     => true,
-		'woocommerce_user_order_count_column' => true,
-		'wpsl_show_store_categories'          => true,
-		'wpsl_disable_rest_api'               => true,
-		'admin_user_registration_date_column' => true,
+		'woocommerce_show_empty_categories'   => false,
+		'woocommerce_hide_category_count'     => false,
+		'woocommerce_user_order_count_column' => false,
+		'wpsl_show_store_categories'          => false,
+		'wpsl_disable_rest_api'               => false,
+		'admin_user_registration_date_column' => false,
 	);
 
 	/**
