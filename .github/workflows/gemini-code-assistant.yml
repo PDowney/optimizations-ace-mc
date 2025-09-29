@@ -280,3 +280,75 @@ jobs:
           
           echo "============================================================"
           echo "✅ Analysis output complete"
+
+      - name: Create GitHub Annotations and Summary
+        if: always()
+        env:
+          ANALYSIS_SUCCESS: ${{ steps.ai-analysis.outputs.analysis-success }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          echo "📝 Creating GitHub annotations and job summary..."
+          
+          # Create job summary with analysis results
+          echo "## 🤖 AI Code Analysis Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Event:** $EVENT_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** $([ "$ANALYSIS_SUCCESS" = "true" ] && echo "✅ Success" || echo "⚠️ Warning")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f ai_analysis_result.txt ]; then
+            # Add analysis results to job summary
+            echo "### Analysis Details" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat ai_analysis_result.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            
+            # Create GitHub annotations for key findings
+            echo "🔍 Creating annotations for key findings..."
+            
+            # Create notice annotation with summary
+            echo "::notice title=AI Analysis Complete::Analysis completed for $EVENT_NAME event. Check job summary for detailed results."
+            
+            # Parse analysis results for security issues and create annotations
+            if grep -qi "security\|vulnerability\|exploit\|xss\|sql injection\|csrf" ai_analysis_result.txt 2>/dev/null; then
+              echo "::warning title=Security Review Required::AI analysis detected potential security concerns. Please review the analysis details in the job summary."
+            fi
+            
+            # Check for coding standards issues
+            if grep -qi "coding standard\|psr\|wordpress standard" ai_analysis_result.txt 2>/dev/null; then
+              echo "::notice title=Coding Standards::AI analysis found coding standards recommendations. Check job summary for details."
+            fi
+            
+            # Check for performance issues
+            if grep -qi "performance\|optimization\|slow\|inefficient" ai_analysis_result.txt 2>/dev/null; then
+              echo "::notice title=Performance Recommendations::AI analysis found performance optimization opportunities. Check job summary for details."
+            fi
+            
+            # Extract specific line-by-line feedback if available
+            if grep -E "line [0-9]+|:[0-9]+:" ai_analysis_result.txt 2>/dev/null; then
+              echo "::notice title=Line-Specific Feedback::AI analysis provided line-specific recommendations. See job summary for details."
+            fi
+            
+            # Check analysis length and create appropriate annotation
+            ANALYSIS_SIZE=$(wc -c < ai_analysis_result.txt)
+            if [ "$ANALYSIS_SIZE" -gt 1000 ]; then
+              echo "::notice title=Detailed Analysis Available::Comprehensive AI analysis completed ($ANALYSIS_SIZE characters). Full results available in job summary."
+            else
+              echo "::notice title=Quick Analysis Complete::AI analysis completed with brief feedback. See job summary for details."
+            fi
+            
+          else
+            echo "### ❌ Analysis Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The AI analysis could not be completed. This may be due to:" >> $GITHUB_STEP_SUMMARY
+            echo "- API configuration issues" >> $GITHUB_STEP_SUMMARY
+            echo "- Network connectivity problems" >> $GITHUB_STEP_SUMMARY
+            echo "- Service availability" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Please conduct manual code review." >> $GITHUB_STEP_SUMMARY
+            
+            echo "::error title=AI Analysis Failed::Unable to complete automated analysis. Manual review required."
+          fi
+          
+          echo "✅ GitHub annotations and summary created successfully"
