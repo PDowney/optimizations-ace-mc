@@ -108,6 +108,7 @@ jobs:
         uses: geekyeggo/delete-artifact@v2
         with:
           name: plugin-check-report
+          failOnError: false
       
       - name: Create issue on plugin check failure
         if: ${{ failure() }}

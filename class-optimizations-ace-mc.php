@@ -552,7 +552,8 @@ class Optimizations_Ace_Mc {
 	private function display_admin_notices() {
 		// Note: Form submission is handled automatically by WordPress Settings API.
 		// The settings_fields() function handles CSRF protection via nonces.
-		if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( isset( $_GET['settings-updated'] ) && wp_unslash( $_GET['settings-updated'] ) ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings saved successfully!', 'optimizations-ace-mc' ) . '</p></div>';
 		}
 	}
