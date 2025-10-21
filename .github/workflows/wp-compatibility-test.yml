@@ -38,6 +38,10 @@ jobs:
       matrix:
         php-version: ['7.4', '8.0', '8.3', '8.4']
     
+    env:
+      # Make artifacts unique per PHP version to avoid conflicts in matrix jobs
+      ARTIFACT_NAME_SUFFIX: php-${{ matrix.php-version }}
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -62,7 +66,14 @@ jobs:
       - name: Install Composer dependencies (no cache)
         run: |
           composer install --prefer-dist --no-progress --no-cache
-      
+
+      - name: Clean up potential artifact directories
+        run: |
+          echo "🧹 Removing any artifact directories to prevent conflicts..."
+          rm -rf .reports 2>/dev/null || true
+          rm -rf build 2>/dev/null || true
+          echo "✅ Cleanup complete"
+
       - name: WordPress Plugin Check
         uses: WordPress/plugin-check-action@v1.1.2
         with:
@@ -86,6 +97,17 @@ jobs:
           
           # WordPress version to use
           wp-version: 'latest'
+      
+      - name: Handle artifact conflict (PHP ${{ matrix.php-version }})
+        if: ${{ always() }}
+        run: |
+          echo "✅ Plugin Check completed for PHP ${{ matrix.php-version }}"
+      
+      - name: Delete conflicting artifacts from matrix jobs
+        if: ${{ always() }}
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: plugin-check-report
       
       - name: Create issue on plugin check failure
         if: ${{ failure() }}
