@@ -30,17 +30,11 @@ permissions:
 
 jobs:
   plugin-check:
-    name: WordPress Plugin Check (PHP ${{ matrix.php-version }})
+    name: WordPress Plugin Check (PHP 8.3)
     runs-on: ubuntu-latest
     
     strategy:
       fail-fast: false
-      matrix:
-        php-version: ['7.4', '8.0', '8.3', '8.4']
-    
-    env:
-      # Make artifacts unique per PHP version to avoid conflicts in matrix jobs
-      ARTIFACT_NAME_SUFFIX: php-${{ matrix.php-version }}-${{ github.run_id }}-${{ github.run_number }}
     
     steps:
       - name: Checkout code
@@ -50,10 +44,10 @@ jobs:
           fetch-depth: 0
           clean: true
       
-      - name: Setup PHP
+      - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
           tools: composer:v2
@@ -98,31 +92,10 @@ jobs:
           # WordPress version to use
           wp-version: 'latest'
       
-      - name: Rename artifact to avoid conflicts (PHP ${{ matrix.php-version }})
+      - name: Handle plugin check completion
         if: ${{ always() }}
         run: |
-          echo "📦 Looking for plugin-check artifacts to rename..."
-          if [ -d ".reports" ]; then
-            echo "Found .reports directory"
-            if [ -f ".reports/plugin-check-report.json" ]; then
-              mkdir -p "plugin-check-reports-php-${{ matrix.php-version }}"
-              mv .reports/plugin-check-report.json "plugin-check-reports-php-${{ matrix.php-version }}/"
-              echo "✅ Renamed artifact for PHP ${{ matrix.php-version }}"
-            fi
-          fi
-      
-      - name: Upload renamed artifact
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: plugin-check-report-php-${{ matrix.php-version }}-${{ github.run_id }}
-          path: plugin-check-reports-php-${{ matrix.php-version }}/
-          if-no-files-found: ignore
-      
-      - name: Skip Plugin Check for other PHP versions
-        if: ${{ matrix.php-version != '7.4' }}
-        run: |
-          echo "✅ Plugin Check completed for PHP ${{ matrix.php-version }}"
+          echo "✅ Plugin Check completed for PHP 8.3"
       
       - name: Create issue on plugin check failure
         if: ${{ failure() }}
@@ -142,21 +115,16 @@ jobs:
           exit 1
 
   phpcs:
-    name: PHPCS Code Standards Check (PHP ${{ matrix.php-version }})
+    name: PHPCS Code Standards Check (PHP 8.3)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-version: ['7.4', '8.0', '8.3', '8.4']
-      fail-fast: false
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Setup PHP ${{ matrix.php-version }}
+      - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
           tools: composer:v2, phpcs
@@ -194,7 +162,7 @@ jobs:
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: ${{ matrix.php-version }}
+          PHP_VERSION: '8.3'
           RUN_ID: ${{ github.run_id }}
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
@@ -202,21 +170,16 @@ jobs:
           update_existing: false
 
   vip-phpcs:
-    name: WordPress VIP Coding Standards (PHP ${{ matrix.php-version }})
+    name: WordPress VIP Coding Standards (PHP 8.3)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-version: ['7.4', '8.0', '8.3', '8.4']
-      fail-fast: false
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Setup PHP ${{ matrix.php-version }}
+      - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
           tools: composer:v2, phpcs
@@ -346,7 +309,7 @@ jobs:
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: ${{ matrix.php-version }}
+          PHP_VERSION: '8.3'
           RUN_ID: ${{ github.run_id }}
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
@@ -354,13 +317,8 @@ jobs:
           update_existing: false
 
   phpmd:
-    name: PHPMD Code Quality Check (PHP ${{ matrix.php-version }})
+    name: PHPMD Code Quality Check (PHP 8.3)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-version: ['7.4', '8.0', '8.3', '8.4']
-      fail-fast: false
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -377,10 +335,10 @@ jobs:
           echo "Latest commit message: $(git log -1 --pretty=%B)"
           echo "=== End Git Information ==="
 
-      - name: Setup PHP ${{ matrix.php-version }}
+      - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
           tools: composer:v2, phpmd
@@ -412,7 +370,7 @@ jobs:
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: ${{ matrix.php-version }}
+          PHP_VERSION: '8.3'
           RUN_ID: ${{ github.run_id }}
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
@@ -420,21 +378,16 @@ jobs:
           update_existing: false
 
   psalm-analysis:
-    name: Psalm Static Analysis (PHP ${{ matrix.php-version }})
+    name: Psalm Static Analysis (PHP 8.3)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-version: ['7.4', '8.0', '8.3', '8.4']
-      fail-fast: false
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Setup PHP ${{ matrix.php-version }}
+      - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
           tools: composer:v2
@@ -482,7 +435,7 @@ jobs:
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: ${{ matrix.php-version }}
+          PHP_VERSION: '8.3'
           RUN_ID: ${{ github.run_id }}
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
@@ -490,21 +443,16 @@ jobs:
           update_existing: false
 
   security-check:
-    name: Security Vulnerability Check (PHP ${{ matrix.php-version }})
+    name: Security Vulnerability Check (PHP 8.3)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-version: ['7.4', '8.0', '8.3', '8.4']
-      fail-fast: false
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Setup PHP ${{ matrix.php-version }}
+      - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
           tools: composer:v2
@@ -573,7 +521,7 @@ jobs:
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: ${{ matrix.php-version }}
+          PHP_VERSION: '8.3'
           RUN_ID: ${{ github.run_id }}
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
@@ -867,13 +815,8 @@ jobs:
           update_existing: false
 
   phpstan-wordpress:
-    name: PHPStan for WordPress (PHP ${{ matrix.php-version }})
+    name: PHPStan for WordPress (PHP 8.3)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-version: ['7.4', '8.0', '8.3', '8.4']
-      fail-fast: false
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -882,10 +825,10 @@ jobs:
           fetch-depth: 0
           clean: true
 
-      - name: Setup PHP ${{ matrix.php-version }}
+      - name: Setup PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: '8.3'
           extensions: mysqli, curl, zip, intl, gd, mbstring, fileinfo, xml
           coverage: none
           tools: composer:v2
@@ -916,7 +859,7 @@ jobs:
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PHP_VERSION: ${{ matrix.php-version }}
+          PHP_VERSION: '8.3'
           RUN_ID: ${{ github.run_id }}
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         with:
