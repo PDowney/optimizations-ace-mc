@@ -40,7 +40,7 @@ jobs:
     
     env:
       # Make artifacts unique per PHP version to avoid conflicts in matrix jobs
-      ARTIFACT_NAME_SUFFIX: php-${{ matrix.php-version }}
+      ARTIFACT_NAME_SUFFIX: php-${{ matrix.php-version }}-${{ github.run_id }}-${{ github.run_number }}
     
     steps:
       - name: Checkout code
@@ -98,17 +98,31 @@ jobs:
           # WordPress version to use
           wp-version: 'latest'
       
-      - name: Handle artifact conflict (PHP ${{ matrix.php-version }})
+      - name: Rename artifact to avoid conflicts (PHP ${{ matrix.php-version }})
         if: ${{ always() }}
         run: |
-          echo "✅ Plugin Check completed for PHP ${{ matrix.php-version }}"
+          echo "📦 Looking for plugin-check artifacts to rename..."
+          if [ -d ".reports" ]; then
+            echo "Found .reports directory"
+            if [ -f ".reports/plugin-check-report.json" ]; then
+              mkdir -p "plugin-check-reports-php-${{ matrix.php-version }}"
+              mv .reports/plugin-check-report.json "plugin-check-reports-php-${{ matrix.php-version }}/"
+              echo "✅ Renamed artifact for PHP ${{ matrix.php-version }}"
+            fi
+          fi
       
-      - name: Delete conflicting artifacts from matrix jobs
+      - name: Upload renamed artifact
         if: ${{ always() }}
-        uses: geekyeggo/delete-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: plugin-check-report
-          failOnError: false
+          name: plugin-check-report-php-${{ matrix.php-version }}-${{ github.run_id }}
+          path: plugin-check-reports-php-${{ matrix.php-version }}/
+          if-no-files-found: ignore
+      
+      - name: Skip Plugin Check for other PHP versions
+        if: ${{ matrix.php-version != '7.4' }}
+        run: |
+          echo "✅ Plugin Check completed for PHP ${{ matrix.php-version }}"
       
       - name: Create issue on plugin check failure
         if: ${{ failure() }}
