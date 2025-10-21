@@ -30,7 +30,7 @@ permissions:
 
 jobs:
   plugin-check:
-    name: WordPress Plugin Check (PHP 8.3)
+    name: WP Plugin Check (PHP 8.3)
     runs-on: ubuntu-latest
     
     strategy:
@@ -115,7 +115,7 @@ jobs:
           exit 1
 
   phpcs:
-    name: PHPCS Code Standards Check (PHP 8.3)
+    name: PHPCS (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -170,7 +170,7 @@ jobs:
           update_existing: false
 
   vip-phpcs:
-    name: WordPress VIP Coding Standards (PHP 8.3)
+    name: WP VIP CS (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -318,7 +318,7 @@ jobs:
           update_existing: false
 
   phpmd:
-    name: PHPMD Code Quality Check (PHP 8.3)
+    name: PHPMD (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -444,7 +444,7 @@ jobs:
           update_existing: false
 
   security-check:
-    name: Security Vulnerability Check (PHP 8.3)
+    name: Security Scan (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -530,7 +530,7 @@ jobs:
           update_existing: false
 
   phpstan-wordpress:
-    name: PHPStan for WordPress (PHP 8.3)
+    name: PHPStan for WP (PHP 8.3)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
