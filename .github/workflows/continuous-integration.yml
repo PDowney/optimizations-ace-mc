@@ -180,7 +180,7 @@ jobs:
           zip -r optimizations-ace-mc.zip optimizations-ace-mc
           
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: optimizations-ace-mc
           path: build/optimizations-ace-mc.zip
