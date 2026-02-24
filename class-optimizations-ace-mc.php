@@ -56,9 +56,21 @@ class Optimizations_Ace_Mc {
 	}
 
 	/**
+	 * Prevent cloning.
+	 */
+	private function __clone() {}
+
+	/**
+	 * Prevent unserializing.
+	 */
+	public function __wakeup() {
+		_doing_it_wrong( __METHOD__, __( 'Unserializing is not allowed.', 'optimizations-ace-mc' ), '1.0.7' );
+	}
+
+	/**
 	 * Constructor.
 	 */
-	public function __construct() {
+	private function __construct() {
 		// Load settings.
 		$this->load_settings();
 
@@ -120,7 +132,6 @@ class Optimizations_Ace_Mc {
 		if ( $this->get_setting( 'woocommerce_user_order_count_column' ) && is_admin() && current_user_can( 'list_users' ) ) {
 			add_filter( 'manage_users_columns', array( $this, 'add_user_order_count_column' ) );
 			add_filter( 'manage_users_custom_column', array( $this, 'display_user_order_count_column' ), 10, 3 );
-			add_filter( 'manage_users_sortable_columns', array( $this, 'make_user_order_count_sortable' ) );
 		}
 	}
 
@@ -176,27 +187,11 @@ class Optimizations_Ace_Mc {
 	 * @return string
 	 */
 	public function display_user_order_count_column( $output, $column_name, $user_id ) {
-		// Security check - only for admins with list_users capability.
-		if ( ! is_admin() || ! current_user_can( 'list_users' ) ) {
-			return $output;
-		}
-
-		if ( 'user_order_count' === $column_name ) {
+		if ( 'user_order_count' === $column_name && function_exists( 'wc_get_customer_order_count' ) ) {
 			$order_count = wc_get_customer_order_count( absint( $user_id ) );
 			return esc_html( number_format_i18n( $order_count ) );
 		}
 		return $output;
-	}
-
-	/**
-	 * Make order count column sortable.
-	 *
-	 * @param array $columns Sortable columns.
-	 * @return array
-	 */
-	public function make_user_order_count_sortable( $columns ) {
-		$columns['user_order_count'] = 'user_order_count';
-		return $columns;
 	}
 
 	/**
@@ -215,12 +210,12 @@ class Optimizations_Ace_Mc {
 				$location_terms = array();
 				foreach ( $terms as $term ) {
 					if ( ! empty( $term->name ) ) {
-						$location_terms[] = sanitize_text_field( $term->name );
+						$location_terms[] = esc_html( $term->name );
 					}
 				}
 				$store_meta['terms'] = implode( ', ', $location_terms );
 			} elseif ( ! empty( $terms[0]->name ) ) {
-				$store_meta['terms'] = sanitize_text_field( $terms[0]->name );
+				$store_meta['terms'] = esc_html( $terms[0]->name );
 			}
 		}
 
@@ -285,11 +280,6 @@ class Optimizations_Ace_Mc {
 	 * @return string
 	 */
 	public function display_user_registration_date_column( $output, $column_name, $user_id ) {
-		// Security check - only for admins with list_users capability.
-		if ( ! is_admin() || ! current_user_can( 'list_users' ) ) {
-			return $output;
-		}
-
 		if ( 'registration_date' === $column_name ) {
 			$registration_date = get_the_author_meta( 'registered', absint( $user_id ) );
 			if ( $registration_date ) {
@@ -524,7 +514,7 @@ class Optimizations_Ace_Mc {
 		// Display success message if settings were updated.
 		$this->display_admin_notices();
 		?>
-		<div class="wrap">
+		<div class="wrap optimizations-ace-mc-wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			
 			<?php $this->display_plugin_info(); ?>
@@ -552,8 +542,8 @@ class Optimizations_Ace_Mc {
 	private function display_admin_notices() {
 		// Note: Form submission is handled automatically by WordPress Settings API.
 		// The settings_fields() function handles CSRF protection via nonces.
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		if ( isset( $_GET['settings-updated'] ) && wp_unslash( $_GET['settings-updated'] ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_GET['settings-updated'] ) && sanitize_text_field( wp_unslash( $_GET['settings-updated'] ) ) ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings saved successfully!', 'optimizations-ace-mc' ) . '</p></div>';
 		}
 	}
@@ -582,7 +572,7 @@ class Optimizations_Ace_Mc {
 	 */
 	private function display_dependencies_info() {
 		?>
-		<div class="card">
+		<div class="optimizations-ace-mc-card">
 			<h2><?php esc_html_e( 'Plugin Dependencies', 'optimizations-ace-mc' ); ?></h2>
 			<p><?php esc_html_e( 'This plugin is designed to work with the following plugins:', 'optimizations-ace-mc' ); ?></p>
 			<ul>
@@ -617,7 +607,7 @@ class Optimizations_Ace_Mc {
 	 */
 	private function display_support_info() {
 		?>
-		<div class="card">
+		<div class="optimizations-ace-mc-card">
 			<h2><?php esc_html_e( 'Support & Documentation', 'optimizations-ace-mc' ); ?></h2>
 			<p>
 				<?php esc_html_e( 'For support, bug reports, or feature requests:', 'optimizations-ace-mc' ); ?>
@@ -635,7 +625,7 @@ class Optimizations_Ace_Mc {
 	private function output_admin_styles() {
 		?>
 		<style>
-			.card {
+			.optimizations-ace-mc-card {
 				background: #fff;
 				border: 1px solid #ccd0d4;
 				border-radius: 4px;
@@ -643,18 +633,18 @@ class Optimizations_Ace_Mc {
 				margin: 20px 0;
 				max-width: 100%;
 			}
-			.card h2 {
+			.optimizations-ace-mc-card h2 {
 				margin-top: 0;
 			}
-			.form-table th {
+			.optimizations-ace-mc-wrap .form-table th {
 				width: 200px;
 			}
-			.form-table td label {
+			.optimizations-ace-mc-wrap .form-table td label {
 				display: flex;
 				align-items: flex-start;
 				gap: 10px;
 			}
-			.form-table td label input[type="checkbox"] {
+			.optimizations-ace-mc-wrap .form-table td label input[type="checkbox"] {
 				margin-top: 2px;
 				flex-shrink: 0;
 			}

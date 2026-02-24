@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- Hardened singleton pattern with private constructor and clone/wakeup prevention
+- Fixed missing input sanitization in settings update notification check
+- Added `function_exists()` guard for `wc_get_customer_order_count()` to prevent fatal errors if WooCommerce is deactivated
+
+### Fixed
+
+- Replaced incorrect `sanitize_text_field()` with proper `esc_html()` for store category term output context
+- Removed broken order count column sorting (no query handler existed to support it)
+- Removed redundant `is_admin()` and `current_user_can()` checks in column render callbacks already guarded at hook registration
+- Scoped admin CSS classes to prevent collisions with WordPress core `.card` styles and other plugins
+- Fixed FAQ to accurately state that all features are disabled by default
+
 ## [1.0.7] - 2025-09-15
 
 ### Added

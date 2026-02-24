@@ -52,7 +52,7 @@ Optimizations ACE MC is a comprehensive WordPress optimization plugin that provi
 
 = Do I need to configure anything? =
 
-The plugin comes with default settings enabled, but you can customize which optimizations to use via the **Settings > Optimizations ACE MC** admin page. Each feature can be individually enabled or disabled.
+All features are disabled by default. Navigate to **Settings > Optimizations ACE MC** to enable the optimizations you need. Each feature can be individually enabled or disabled.
 
 = What happens if I don't have WooCommerce or WP Store Locator installed? =
 
@@ -67,6 +67,16 @@ No, this plugin is designed to improve performance by adding useful admin enhanc
 Yes, this plugin focuses on specific admin and functionality enhancements rather than general optimization, so it should work alongside other optimization plugins.
 
 == Changelog ==
+
+= Unreleased =
+* Security: Hardened singleton pattern with private constructor and clone/wakeup prevention
+* Security: Fixed missing input sanitization in settings update notification check
+* Security: Added function_exists() guard for wc_get_customer_order_count() to prevent fatal errors
+* Fixed: Replaced incorrect sanitize_text_field() with proper esc_html() for store category output
+* Fixed: Removed broken order count column sorting that had no query handler
+* Fixed: Removed redundant capability checks in column render callbacks
+* Fixed: Scoped admin CSS classes to prevent collisions with WordPress core and other plugins
+* Fixed: FAQ now accurately states all features are disabled by default
 
 = 1.0.7 - 2025-09-15 =
 * Added: AI-powered code analysis workflow using Google Gemini for automated security scanning
