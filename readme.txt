@@ -2,7 +2,7 @@
 Contributors: PDowney
 Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.5
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
 Stable tag: 1.0.7
 License: GPLv3 or later
