@@ -64,7 +64,7 @@ class Optimizations_Ace_Mc {
 	 * Prevent unserializing.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __METHOD__, __( 'Unserializing is not allowed.', 'optimizations-ace-mc' ), '1.0.7' );
+		_doing_it_wrong( __METHOD__, esc_html__( 'Unserializing is not allowed.', 'optimizations-ace-mc' ), '1.0.7' );
 	}
 
 	/**
