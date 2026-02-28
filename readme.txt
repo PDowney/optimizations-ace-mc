@@ -4,7 +4,7 @@ Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -68,7 +68,7 @@ Yes, this plugin focuses on specific admin and functionality enhancements rather
 
 == Changelog ==
 
-= Unreleased =
+= 1.0.8 - 2026-02-28 =
 * Security: Hardened singleton pattern with private constructor and clone/wakeup prevention
 * Security: Fixed missing input sanitization in settings update notification check
 * Security: Added function_exists() guard for wc_get_customer_order_count() to prevent fatal errors
