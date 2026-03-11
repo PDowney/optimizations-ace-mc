@@ -15,7 +15,7 @@ frontend:
   - changed-files:
     - any-glob-to-any-file: assets/css/**/*
     - any-glob-to-any-file: assets/images/**/*
-    - any-glob-to-any-file: templates/**/*
+
 
 # Workflows and automation
 automation:
@@ -33,7 +33,6 @@ documentation:
   - changed-files:
     - any-glob-to-any-file: README.md
     - any-glob-to-any-file: '*.md'
-    - any-glob-to-any-file: docs/**/*
 
 # Export functionality
 optimization:
@@ -78,5 +77,4 @@ testing:
   - changed-files:
     - any-glob-to-any-file: tests/**/*
     - any-glob-to-any-file: phpunit.xml
-    - any-glob-to-any-file: .travis.yml
-    - any-glob-to-any-file: .phpcs.xml
+    - any-glob-to-any-file: phpcs.xml

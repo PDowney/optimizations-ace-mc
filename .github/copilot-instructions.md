@@ -2,111 +2,69 @@
 applyTo: '**'
 ---
 
-# WordPress Plugin Development Standards
+# Optimizations ACE MC — Development Standards
 
-## 🎯 Core Principles
+## Environment
 
-**Work Environment:** Remote GitHub Codespaces only. Never suggest local Terminal commands.
-
-**WordPress First:** Use WordPress APIs, hooks, and standards exclusively. Avoid non-WP frameworks.
-
-**Security Critical:** Sanitize all input, escape all output, use WordPress security functions.
-
-**Thorough Analysis:** Read complete files (minimum 1500 lines) for accurate code review.
-
-## 📋 Essential Requirements
-
-### WordPress Compatibility
-
+- **Work in:** Remote GitHub Codespaces only. Never suggest local terminal commands.
 - **WordPress:** 6.5+ minimum
-- **PHP:** 7.4+ minimum  
-- **WooCommerce:** 5.0+ (when applicable)
-- Follow [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/) for PHP, JS, CSS, HTML, and accessibility
+- **PHP:** 8.1+ minimum (use typed properties, readonly, enums, union types, named arguments)
+- **WooCommerce:** 5.0+ (guaranteed active — no activation checks needed)
+- **WP Store Locator:** (guaranteed active — no activation checks needed)
+- **Standards:** Follow [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/) for PHP, JS, CSS, HTML, and accessibility
 
-### Code Quality Standards
+## Security
 
-1. **Security First:** Always sanitize input (`sanitize_*()`) and escape output (`esc_*()`)
-2. **WordPress APIs:** Use WP functions instead of raw PHP/SQL
-3. **Hook System:** Proper use of `add_action()` and `add_filter()`
-4. **Internationalization:** Use `__()`, `_e()`, `esc_html__()` for all strings
-5. **Performance:** Avoid N+1 queries, use WP caching, optimize database calls
+All security rules are **mandatory and non-negotiable**.
 
-## 🔒 Security Requirements (Critical)
+**Input:** Sanitize all user input — `sanitize_text_field()`, `sanitize_email()`, `wp_kses()`, `absint()`. Validate with `is_email()`, `wp_verify_nonce()`. Use `$wpdb->prepare()` for database queries — never raw SQL.
 
-**Input Handling:**
-- Use `sanitize_text_field()`, `sanitize_email()`, `wp_kses()` for user input
-- Validate with `is_email()`, `absint()`, `wp_verify_nonce()` for security
-- Use prepared statements for database queries (`$wpdb->prepare()`)
+**Output:** Escape all dynamic output — `esc_html()`, `esc_attr()`, `esc_url()`, `esc_js()`.
 
-**Output Security:**
-- Escape all output: `esc_html()`, `esc_attr()`, `esc_url()`, `esc_js()`
-- Use `wp_nonce_field()` and `wp_verify_nonce()` for forms
-- Check permissions with `current_user_can()` before sensitive operations
+**Authorization:** Check `current_user_can()` before sensitive operations. Use `wp_nonce_field()` / `wp_verify_nonce()` for forms and state-changing requests.
 
-**Vulnerability Prevention:**
-- Prevent SQL injection, XSS, CSRF, Local File Inclusion (LFI), and path traversal
-- Follow principle of least privilege
-- Auto-identify and fix security issues when found
+**Prevention:** Guard against SQL injection, XSS, CSRF, LFI, and path traversal. Follow principle of least privilege. Flag and fix security issues immediately when found.
 
-## 📝 Documentation & Versioning
+## Code Standards
 
-**Changelog Management:**
-- Always update CHANGELOG.md and readme.txt when making code changes
-- **Sync both changelogs:** CHANGELOG.md and readme.txt changelog section
-- Use "Unreleased" section for ongoing changes
+- **WordPress APIs only:** Use WP functions instead of raw PHP equivalents. Prefer hooks (`add_action()`, `add_filter()`) over direct calls.
+- **PHP 8.1+:** Use typed properties, return type declarations, parameter types, `readonly` where appropriate, null coalescing, and short array syntax.
+- **PHPDoc:** Use `@param`, `@return`, `@since` tags on all functions and methods.
+- **Naming:** Functions: `snake_case`. Classes: `PascalCase_With_Underscores`. Constants: `UPPER_SNAKE_CASE`. Files: `lowercase-with-hyphens.php`.
+- **Performance:** Avoid N+1 queries. Use WordPress caching (`wp_cache_*()`, transients). Enqueue assets with `wp_enqueue_*()`. Focus on correctness first, then optimize.
+- **Error handling:** Use `WP_Error` for WordPress errors. Log errors without exposing sensitive data. Handle edge cases gracefully.
+- **Unused code:** Flag potentially unused code for review before removing — WordPress hooks can call code dynamically.
 
-**Version Release Process (only when instructed):**
-- Follow semantic versioning (MAJOR.MINOR.PATCH)
-- Update version in: plugin header, README.md, readme.txt, CHANGELOG.md, GEMINI.md, and `.pot` language files, constants section, package.json, and composer.json
-- Move "Unreleased" changes to new version section in both changelogs
-- **Never auto-update versions** - wait for explicit instruction
+## Internationalization
 
-**Code Documentation:**
-- Use PHPDoc with `@param`, `@return`, `@since` tags
-- Write clear function/class descriptions
-- Document security considerations and hooks used
-
-**Internationalization (i18n):**
-- Update `.pot` language files when adding or modifying translatable strings
-- Always use the correct text domain when dealing with translation functions
+- **Text domain:** `'optimizations-ace-mc'`
 - Mark all user-facing strings with `__()`, `_e()`, `esc_html__()`, `esc_attr__()`, etc.
+- Update `.pot` language files when adding or modifying translatable strings
 
-## ⚡ Performance & Quality
+## Documentation & Versioning
 
-**Performance Optimization:**
-- Use WordPress caching (`wp_cache_*()`, transients)
-- Optimize database queries, avoid N+1 problems
-- Proper asset enqueueing with `wp_enqueue_*()` functions
-- Focus on correctness first, then optimize
+**Changelogs:**
+- Update both CHANGELOG.md and readme.txt changelog section for every code change — keep them in sync
+- Use the "Unreleased" section for ongoing changes
 
-**Code Architecture:**
-- Group by feature, not by type
-- Use descriptive function/variable names
-- Remove unused code automatically
-- Follow feature-sliced design when applicable
+**Version releases (only when explicitly instructed):**
+- Semantic versioning: MAJOR.MINOR.PATCH
+- Update version in: plugin header, README.md, readme.txt, CHANGELOG.md, GEMINI.md, `.pot` files, constants, composer.json
+- Move "Unreleased" changes to the new version section
+- **Never auto-update versions**
 
-**Error Handling:**
-- Use `WP_Error` for WordPress-specific errors
-- Log errors without exposing sensitive data
-- Handle edge cases gracefully
-- Validate all function parameters
+## CI/CD & Workflows
 
-## 🚀 Workflow & Automation
+- GitHub Actions workflows live in `.github/workflows/`
+- **Gemini AI integration:** Code review and issue analysis via Google Gemini API. Sanitize all user-controlled content (diffs, issue bodies) before passing to LLM prompts.
+- **Static analysis:** PHPStan (Level 5+), PHPCS (WordPress standards), PHPMD, Psalm
+- **Test matrix:** PHP 8.1, 8.2, 8.3, 8.4 × WordPress 6.5, latest, nightly
+- **Security:** Never expose API keys or tokens in logs. Use `${{ secrets.* }}` for credentials. Add timeouts to external API calls. Fail builds on critical security findings.
+- **Error handling in workflows:** Do not suppress tool failures with `|| echo`. Log full output and set appropriate exit codes.
 
-**Task Execution:**
-- Make changes directly to existing files (don't create duplicates)
-- Proceed automatically unless action is destructive
-- Auto-identify and fix bugs when possible
-- Only ask confirmation for data loss/deletion scenarios
+## Workflow Rules
 
-**File Management:**
-- Edit files in place (e.g., modify `admin.php` directly)
-- Create new files only when truly necessary
-- Avoid file duplication and unnecessary rewrites
-- Maintain clean project structure
-
-**Communication:**
-- Provide concise, actionable responses
-- Use clear formatting for readability
-- Never create change summaries as separate .md files
-- Focus on specific changes made, not verbose explanations
+- Edit files in place. Create new files only when architecturally necessary.
+- Proceed automatically unless an action is destructive or irreversible.
+- Auto-identify and fix bugs. Ask confirmation only for data loss or deletion.
+- Provide concise, actionable responses. Never create separate summary .md files.

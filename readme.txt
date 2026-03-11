@@ -3,7 +3,7 @@ Contributors: PDowney
 Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.5
 Tested up to: 6.9
-Requires PHP: 7.4
+Requires PHP: 8.1
 Stable tag: 1.0.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -37,9 +37,9 @@ Optimizations ACE MC is a comprehensive WordPress optimization plugin that provi
 = Requirements =
 
 * WordPress 6.5 or higher
-* PHP 7.4 or higher
-* WooCommerce (for WooCommerce-specific features)
-* WP Store Locator (for store locator features)
+* PHP 8.1 or higher
+* WooCommerce 5.0+ (required — must be active)
+* WP Store Locator (required — must be active)
 
 == Installation ==
 
@@ -67,6 +67,21 @@ No, this plugin is designed to improve performance by adding useful admin enhanc
 Yes, this plugin focuses on specific admin and functionality enhancements rather than general optimization, so it should work alongside other optimization plugins.
 
 == Changelog ==
+
+= Unreleased =
+* Changed: Raised minimum PHP version from 7.4 to 8.1
+* Changed: Added typed properties, parameter types, and return types to all class members (PHP 8.1+)
+* Changed: Extracted inline admin CSS to enqueued assets/css/admin.css stylesheet
+* Changed: Made store category label filterable via apply_filters( 'optimizations_ace_mc_store_category_label' )
+* Changed: Cached date_format option to avoid per-row database lookups
+* Changed: Simplified store categories meta logic — removed separate single/multi-term branches
+* Removed: display_dependencies_info() method and inline dependency checks (plugins guaranteed active)
+* Removed: output_admin_styles() method — replaced by external CSS file
+* Removed: Unused OPTIMIZATIONS_ACE_MC_PLUGIN_BASENAME constant
+* Fixed: Added @since tags to all methods missing them
+* Fixed: Updated PHP version requirement text from "7.4+" to "8.1+" in plugin info display
+* Fixed: Improved phpcs:ignore comment for settings-updated nonce verification
+* Fixed: labeler.yml referencing nonexistent paths
 
 = 1.0.8 - 2026-02-28 =
 * Security: Hardened singleton pattern with private constructor and clone/wakeup prevention

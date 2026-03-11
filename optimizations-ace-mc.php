@@ -12,7 +12,7 @@
  * Domain Path: /languages
  * Requires at least: 6.5
  * Tested up to: 6.9
- * Requires PHP: 7.4
+ * Requires PHP: 8.1
  *
  * @package OptimizationsAceMc
  */
@@ -25,7 +25,6 @@ if ( ! defined( 'WPINC' ) ) {
 // Define plugin constants.
 define( 'OPTIMIZATIONS_ACE_MC_VERSION', '1.0.8' );
 define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_FILE', __FILE__ );
-define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'OPTIMIZATIONS_ACE_MC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -35,9 +34,10 @@ require_once OPTIMIZATIONS_ACE_MC_PLUGIN_DIR . 'class-optimizations-ace-mc.php';
 /**
  * Initialize the plugin.
  *
+ * @since 1.0.0
  * @return Optimizations_Ace_Mc
  */
-function optimizations_ace_mc() {
+function optimizations_ace_mc(): Optimizations_Ace_Mc {
     return Optimizations_Ace_Mc::instance();
 }
 

@@ -75,7 +75,7 @@ msgid "Show Store Categories"
 msgstr ""
 
 #: class-optimizations-ace-mc.php:394
-msgid "Display store categories in the store locator info windows as \"Certifications\"."
+msgid "Display store categories in the store locator info windows."
 msgstr ""
 
 #: class-optimizations-ace-mc.php:399
@@ -143,38 +143,10 @@ msgid "PHP:"
 msgstr ""
 
 #: class-optimizations-ace-mc.php:499
-msgid "7.4+ required"
+msgid "8.1+ required"
 msgstr ""
 
-#: class-optimizations-ace-mc.php:508
-msgid "Plugin Dependencies"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:509
-msgid "This plugin is designed to work with the following plugins:"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:514
-msgid "Active"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:516
-msgid "Not detected"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:525
-msgid "Active"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:527
-msgid "Not detected"
-msgstr ""
-
-#: class-optimizations-ace-mc.php:531
-msgid "Note: Plugin features will only be active when their corresponding dependencies are installed and activated."
-msgstr ""
-
-#: class-optimizations-ace-mc.php:535
+#: class-optimizations-ace-mc.php
 msgid "Support & Documentation"
 msgstr ""
 

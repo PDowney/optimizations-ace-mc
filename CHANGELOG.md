@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **PHP 8.1+ Modernization:**
+  - Raised minimum PHP version from 7.4 to 8.1 across plugin header, composer.json, readme.txt
+  - Added typed properties (`?self`, `array`, `readonly array`, `string`) to all class properties
+  - Added parameter type declarations and return type declarations to all methods
+  - Replaced `isset()` ternary patterns with null coalescing operator
+  - Used `readonly` modifier for immutable `$default_settings` property
+  - Simplified `sanitize_settings()` with concise boolean cast
+
+- **Performance:**
+  - Cached `get_option( 'date_format' )` result in `$date_format` property to avoid per-row database lookups
+  - Extracted inline admin CSS to enqueued `assets/css/admin.css` stylesheet, loaded only on plugin settings page
+  - Removed `output_admin_styles()` method and inline `<style>` block
+
+- **Architecture:**
+  - Made store category label filterable via `apply_filters( 'optimizations_ace_mc_store_category_label' )`
+  - Simplified `add_store_categories_to_meta()` — removed separate single/multi-term branches
+  - Captured `add_submenu_page()` return value in `$settings_page_hook` property for targeted asset loading
+  - Removed unused `OPTIMIZATIONS_ACE_MC_PLUGIN_BASENAME` constant
+
+### Removed
+
+- Removed `display_dependencies_info()` method — WooCommerce and WP Store Locator are guaranteed active
+- Removed `function_exists( 'wc_get_customer_order_count' )` guard — WooCommerce is guaranteed active
+- Removed `class_exists()` / `function_exists()` dependency checks in display methods
+
+### Fixed
+
+- Added `@since` tags to all methods missing them
+- Added proper phpcs:ignore comment explaining why `$_GET['settings-updated']` nonce check is unnecessary
+- Updated settings description for store categories to be generic (removed hardcoded "Certifications" mention)
+- Updated PHP version text from "7.4+ required" to "8.1+ required" in plugin info display
+- Fixed `.github/labeler.yml` referencing nonexistent paths (`templates/**/*`, `docs/**/*`, `.travis.yml`)
+
 ## [1.0.8] - 2026-02-28
 
 ### Security
