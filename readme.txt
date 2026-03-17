@@ -1,7 +1,7 @@
 === Optimizations ACE MC ===
 Contributors: PDowney
 Tags: optimization, performance, wp-optimizer, speed, seo
-Requires at least: 6.5
+Requires at least: 6.6
 Tested up to: 6.9
 Requires PHP: 8.1
 Stable tag: 1.0.8
@@ -36,7 +36,7 @@ Optimizations ACE MC is a comprehensive WordPress optimization plugin that provi
 
 = Requirements =
 
-* WordPress 6.5 or higher
+* WordPress 6.6 or higher
 * PHP 8.1 or higher
 * WooCommerce 5.0+ (required — must be active)
 * WP Store Locator (required — must be active)

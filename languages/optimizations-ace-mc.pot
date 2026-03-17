@@ -135,7 +135,7 @@ msgid "WordPress:"
 msgstr ""
 
 #: class-optimizations-ace-mc.php:498
-msgid "6.5+ required"
+msgid "6.6+ required"
 msgstr ""
 
 #: class-optimizations-ace-mc.php:499

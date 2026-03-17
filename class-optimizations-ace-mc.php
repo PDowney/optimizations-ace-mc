@@ -643,7 +643,7 @@ class Optimizations_Ace_Mc {
 			</p>
 			<p>
 				<strong><?php esc_html_e( 'Version:', 'optimizations-ace-mc' ); ?></strong> <?php echo esc_html( OPTIMIZATIONS_ACE_MC_VERSION ); ?> |
-				<strong><?php esc_html_e( 'WordPress:', 'optimizations-ace-mc' ); ?></strong> <?php esc_html_e( '6.5+ required', 'optimizations-ace-mc' ); ?> |
+				<strong><?php esc_html_e( 'WordPress:', 'optimizations-ace-mc' ); ?></strong> <?php esc_html_e( '6.6+ required', 'optimizations-ace-mc' ); ?> |
 				<strong><?php esc_html_e( 'PHP:', 'optimizations-ace-mc' ); ?></strong> <?php esc_html_e( '8.1+ required', 'optimizations-ace-mc' ); ?>
 			</p>
 		</div>

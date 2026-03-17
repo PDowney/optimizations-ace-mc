@@ -7,7 +7,7 @@ applyTo: '**'
 ## Environment
 
 - **Work in:** Remote GitHub Codespaces only. Never suggest local terminal commands.
-- **WordPress:** 6.5+ minimum
+- **WordPress:** 6.6+ minimum
 - **PHP:** 8.1+ minimum (use typed properties, readonly, enums, union types, named arguments)
 - **WooCommerce:** 5.0+ (guaranteed active — no activation checks needed)
 - **WP Store Locator:** (guaranteed active — no activation checks needed)
@@ -58,7 +58,7 @@ All security rules are **mandatory and non-negotiable**.
 - GitHub Actions workflows live in `.github/workflows/`
 - **Gemini AI integration:** Code review and issue analysis via Google Gemini API. Sanitize all user-controlled content (diffs, issue bodies) before passing to LLM prompts.
 - **Static analysis:** PHPStan (Level 5+), PHPCS (WordPress standards), PHPMD, Psalm
-- **Test matrix:** PHP 8.1, 8.2, 8.3, 8.4 × WordPress 6.5, latest, nightly
+- **Test matrix:** PHP 8.1, 8.2, 8.3, 8.4, 8.5 × WordPress 6.6, latest, nightly
 - **Security:** Never expose API keys or tokens in logs. Use `${{ secrets.* }}` for credentials. Add timeouts to external API calls. Fail builds on critical security findings.
 - **Error handling in workflows:** Do not suppress tool failures with `|| echo`. Log full output and set appropriate exit codes.
 

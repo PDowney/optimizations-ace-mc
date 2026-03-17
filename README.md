@@ -4,7 +4,7 @@ A lightweight WordPress optimization plugin with pre-configured performance enha
 
 ## Requirements
 
-- WordPress 6.5+
+- WordPress 6.6+
 - PHP 8.1+
 - WooCommerce 5.0+
 - WP Store Locator

@@ -10,7 +10,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: optimizations-ace-mc
  * Domain Path: /languages
- * Requires at least: 6.5
+ * Requires at least: 6.6
  * Tested up to: 6.9
  * Requires PHP: 8.1
  *
