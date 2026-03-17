@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **CI/CD:**
+  - Updated WordPress compatibility workflow matrix to test PHP 8.1-8.5 only
+  - Removed PHP 7.4 and 8.0 matrix jobs that are below the plugin minimum requirement
+
 - **PHP 8.1+ Modernization:**
   - Raised minimum PHP version from 7.4 to 8.1 across plugin header, composer.json, readme.txt
   - Added typed properties (`?self`, `array`, `readonly array`, `string`) to all class properties

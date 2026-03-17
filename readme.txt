@@ -69,6 +69,8 @@ Yes, this plugin focuses on specific admin and functionality enhancements rather
 == Changelog ==
 
 = Unreleased =
+* Changed: Updated WordPress compatibility workflow matrix to test PHP 8.1-8.5 only
+* Changed: Removed PHP 7.4 and 8.0 workflow matrix jobs (below minimum supported PHP version)
 * Changed: Raised minimum PHP version from 7.4 to 8.1
 * Changed: Added typed properties, parameter types, and return types to all class members (PHP 8.1+)
 * Changed: Extracted inline admin CSS to enqueued assets/css/admin.css stylesheet
