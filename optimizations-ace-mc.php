@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Optimizations ACE MC
- * Plugin URI: https://github.com/PDowney/optimizations-ace-mc
+ * Plugin URI: https://github.com/EngineScript/optimizations-ace-mc
  * Description: A lightweight WordPress optimization plugin with pre-configured performance enhancements for WooCommerce, WP Store Locator, and WordPress admin.
  * Version: 1.0.8
- * Author: PDowney
- * Author URI: https://github.com/PDowney
+ * Author: EngineScript
+ * Author URI: https://github.com/EngineScript
  * License: GPL-3.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: optimizations-ace-mc

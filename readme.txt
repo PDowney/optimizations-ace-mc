@@ -1,5 +1,5 @@
 === Optimizations ACE MC ===
-Contributors: PDowney
+Contributors: EngineScript
 Tags: optimization, performance, wp-optimizer, speed, seo
 Requires at least: 6.6
 Tested up to: 6.9

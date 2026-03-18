@@ -1,9 +1,9 @@
-# Copyright (C) 2025 PDowney
+# Copyright (C) 2026 EngineScript
 # This file is distributed under the same license as the Optimizations ACE MC plugin.
 msgid ""
 msgstr ""
 "Project-Id-Version: Optimizations ACE MC 1.0.8\n"
-"Report-Msgid-Bugs-To: https://github.com/PDowney/optimizations-ace-mc/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/EngineScript/optimizations-ace-mc/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -163,7 +163,7 @@ msgid "Optimizations ACE MC"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "https://github.com/PDowney/optimizations-ace-mc"
+msgid "https://github.com/EngineScript/optimizations-ace-mc"
 msgstr ""
 
 #. Description of the plugin/theme
@@ -171,9 +171,9 @@ msgid "A lightweight WordPress optimization plugin with pre-configured performan
 msgstr ""
 
 #. Author of the plugin/theme
-msgid "PDowney"
+msgid "EngineScript"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "https://github.com/PDowney"
+msgid "https://github.com/EngineScript"
 msgstr ""

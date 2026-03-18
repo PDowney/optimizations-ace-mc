@@ -661,7 +661,7 @@ class Optimizations_Ace_Mc {
 			<h2><?php esc_html_e( 'Support & Documentation', 'optimizations-ace-mc' ); ?></h2>
 			<p>
 				<?php esc_html_e( 'For support, bug reports, or feature requests:', 'optimizations-ace-mc' ); ?>
-				<a href="https://github.com/PDowney/optimizations-ace-mc" target="_blank" rel="noopener noreferrer">
+				<a href="https://github.com/EngineScript/optimizations-ace-mc" target="_blank" rel="noopener noreferrer">
 					<?php esc_html_e( 'Visit the GitHub repository', 'optimizations-ace-mc' ); ?>
 				</a>
 			</p>

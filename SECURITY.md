@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-We release security updates for the latest major version of PDowney. Please ensure you are running the latest version to receive security patches.
+We release security updates for the latest major version of EngineScript. Please ensure you are running the latest version to receive security patches.
 
 | Version    | Supported          |
 |------------|--------------------|
